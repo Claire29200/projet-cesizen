@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -23,12 +22,13 @@ interface InfoPage {
 interface ContentState {
   infoPages: InfoPage[];
   getInfoPageBySlug: (slug: string) => InfoPage | undefined;
-  updateInfoPage: (pageId: string, data: Partial<InfoPage>) => void;
+  updateInfoPage: (pageData: InfoPage) => void;
   updateSection: (pageId: string, sectionId: string, data: Partial<ContentSection>) => void;
   addSection: (pageId: string, section: Omit<ContentSection, 'id' | 'updatedAt'>) => void;
   removeSection: (pageId: string, sectionId: string) => void;
   addInfoPage: (page: Omit<InfoPage, 'id' | 'createdAt' | 'updatedAt'>) => void;
   removeInfoPage: (pageId: string) => void;
+  deleteInfoPage: (pageId: string) => void;
 }
 
 // Initial content for the website
@@ -156,11 +156,11 @@ export const useContentStore = create<ContentState>()(
         return get().infoPages.find(page => page.slug === slug);
       },
       
-      updateInfoPage: (pageId, data) => {
+      updateInfoPage: (pageData) => {
         set(state => ({
           infoPages: state.infoPages.map(page => 
-            page.id === pageId 
-              ? { ...page, ...data, updatedAt: new Date() } 
+            page.id === pageData.id 
+              ? { ...pageData, updatedAt: new Date() } 
               : page
           )
         }));
@@ -235,6 +235,10 @@ export const useContentStore = create<ContentState>()(
         set(state => ({
           infoPages: state.infoPages.filter(page => page.id !== pageId)
         }));
+      },
+      
+      deleteInfoPage: (pageId) => {
+        get().removeInfoPage(pageId);
       }
     }),
     {

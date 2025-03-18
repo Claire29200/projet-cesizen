@@ -38,7 +38,7 @@ import { motion } from "framer-motion";
 import { Search, Plus, Edit, Trash2, Eye, FileText } from "lucide-react";
 
 const AdminInformations = () => {
-  const { infoPages, addInfoPage, updateInfoPage, deleteInfoPage } = useContentStore();
+  const { infoPages, addInfoPage, updateInfoPage, removeInfoPage } = useContentStore(); // Utiliser removeInfoPage au lieu de deleteInfoPage
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddPageDialogOpen, setIsAddPageDialogOpen] = useState(false);
   const [isDeletePageDialogOpen, setIsDeletePageDialogOpen] = useState(false);
@@ -138,18 +138,19 @@ const AdminInformations = () => {
       return;
     }
     
-    // Generate IDs for sections
+    // Generate IDs for sections and add updatedAt field
     const sectionsWithIds = newPageData.sections.map((section) => ({
       ...section,
       id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+      updatedAt: new Date(), // Ajout de updatedAt pour chaque section
     }));
     
     addInfoPage({
       ...newPageData,
       id: Date.now().toString(),
       sections: sectionsWithIds,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
     
     setNewPageData({
@@ -210,7 +211,7 @@ const AdminInformations = () => {
   const handleDeletePage = () => {
     if (!selectedPage) return;
     
-    deleteInfoPage(selectedPage.id);
+    removeInfoPage(selectedPage.id); // Utiliser removeInfoPage au lieu de deleteInfoPage
     setIsDeletePageDialogOpen(false);
     setSelectedPage(null);
     

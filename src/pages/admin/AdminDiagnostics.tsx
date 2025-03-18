@@ -54,6 +54,7 @@ const AdminDiagnostics = () => {
   const [selectedQuestion, setSelectedQuestion] = useState<any>(null);
   const [newQuestionData, setNewQuestionData] = useState({
     question: "",
+    category: "Général", // Ajout de la propriété category manquante
     order: questions.length > 0 ? Math.max(...questions.map(q => q.order)) + 1 : 1,
     points: [0, 1, 2, 3, 4],
     isActive: true,
@@ -85,6 +86,7 @@ const AdminDiagnostics = () => {
     
     setNewQuestionData({
       question: "",
+      category: "Général", // Réinitialiser la catégorie
       order: questions.length > 0 ? Math.max(...questions.map(q => q.order)) + 1 : 1,
       points: [0, 1, 2, 3, 4],
       isActive: true,
