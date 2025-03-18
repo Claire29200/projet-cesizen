@@ -8,6 +8,7 @@ export interface StressQuestion {
   category: string;
   points: number[];
   order: number;
+  isActive: boolean; // Ajout de la propriété isActive
 }
 
 export interface DiagnosticResult {
@@ -22,22 +23,33 @@ export interface DiagnosticResult {
   feedbackProvided: string;
 }
 
+// Interface pour les niveaux de feedback
+export interface FeedbackLevel {
+  minScore: number;
+  maxScore: number;
+  label: string;
+  description: string;
+}
+
 interface DiagnosticState {
   questions: StressQuestion[];
   results: DiagnosticResult[];
-  stressFeedbackLevels: { min: number; max: number; label: string; description: string }[];
+  feedbacks: FeedbackLevel[]; // Renommé à feedbacks au lieu de stressFeedbackLevels
   
   // Methods for admin
-  updateQuestion: (id: string, data: Partial<StressQuestion>) => void;
-  addQuestion: (question: Omit<StressQuestion, 'id'>) => void;
+  updateQuestion: (question: StressQuestion) => void; // Modifié pour prendre un seul argument
+  addQuestion: (question: StressQuestion) => void; // Modifié pour prendre un StressQuestion complet
   removeQuestion: (id: string) => void;
+  deleteQuestion: (id: string) => void; // Alias pour removeQuestion
   reorderQuestions: (questionIds: string[]) => void;
-  updateFeedbackLevel: (index: number, data: Partial<{ min: number; max: number; label: string; description: string }>) => void;
+  updateFeedback: (feedbacks: FeedbackLevel[]) => void; // Nouvelle méthode
   
   // Methods for users
   saveResult: (result: Omit<DiagnosticResult, 'id' | 'date'>) => string;
   getResultById: (id: string) => DiagnosticResult | undefined;
   getResultsForUser: (userId: string | null) => DiagnosticResult[];
+  getUserResults: (userId: string | null) => DiagnosticResult[]; // Alias pour getResultsForUser 
+  getAllResults: () => DiagnosticResult[]; // Nouvelle méthode
   getLatestResultForUser: (userId: string | null) => DiagnosticResult | undefined;
   getFeedbackForScore: (score: number) => { label: string; description: string };
 }
@@ -49,90 +61,100 @@ const initialQuestions: StressQuestion[] = [
     question: "Au cours du dernier mois, à quelle fréquence vous êtes-vous senti nerveux ou stressé ?",
     category: "Perception du stress",
     points: [0, 1, 2, 3, 4],
-    order: 1
+    order: 1,
+    isActive: true
   },
   {
     id: 'q2',
     question: "Au cours du dernier mois, à quelle fréquence avez-vous eu l'impression de ne pas pouvoir contrôler les choses importantes de votre vie ?",
     category: "Contrôle",
     points: [0, 1, 2, 3, 4],
-    order: 2
+    order: 2,
+    isActive: true
   },
   {
     id: 'q3',
     question: "Au cours du dernier mois, à quelle fréquence vous êtes-vous senti confiant dans votre capacité à gérer vos problèmes personnels ?",
     category: "Confiance",
     points: [4, 3, 2, 1, 0], // Reversed scoring
-    order: 3
+    order: 3,
+    isActive: true
   },
   {
     id: 'q4',
     question: "Au cours du dernier mois, à quelle fréquence avez-vous senti que les choses allaient comme vous le vouliez ?",
     category: "Satisfaction",
     points: [4, 3, 2, 1, 0], // Reversed scoring
-    order: 4
+    order: 4,
+    isActive: true
   },
   {
     id: 'q5',
     question: "Au cours du dernier mois, à quelle fréquence avez-vous senti que les difficultés s'accumulaient à tel point que vous ne pouviez pas les surmonter ?",
     category: "Surcharge",
     points: [0, 1, 2, 3, 4],
-    order: 5
+    order: 5,
+    isActive: true
   },
   {
     id: 'q6',
     question: "Au cours du dernier mois, à quelle fréquence avez-vous eu des difficultés à vous endormir ou à rester endormi ?",
     category: "Sommeil",
     points: [0, 1, 2, 3, 4],
-    order: 6
+    order: 6,
+    isActive: true
   },
   {
     id: 'q7',
     question: "Au cours du dernier mois, à quelle fréquence vous êtes-vous senti irritable ou facilement agacé ?",
     category: "Irritabilité",
     points: [0, 1, 2, 3, 4],
-    order: 7
+    order: 7,
+    isActive: true
   },
   {
     id: 'q8',
     question: "Au cours du dernier mois, à quelle fréquence vous êtes-vous senti débordé par tout ce que vous aviez à faire ?",
     category: "Surcharge",
     points: [0, 1, 2, 3, 4],
-    order: 8
+    order: 8,
+    isActive: true
   },
   {
     id: 'q9',
     question: "Au cours du dernier mois, à quelle fréquence avez-vous été capable de contrôler votre irritation ?",
     category: "Contrôle émotionnel",
     points: [4, 3, 2, 1, 0], // Reversed scoring
-    order: 9
+    order: 9,
+    isActive: true
   },
   {
     id: 'q10',
     question: "Au cours du dernier mois, à quelle fréquence avez-vous ressenti des tensions ou douleurs physiques (maux de tête, tensions musculaires, etc.) ?",
     category: "Manifestations physiques",
     points: [0, 1, 2, 3, 4],
-    order: 10
+    order: 10,
+    isActive: true
   }
 ];
 
-// Initial feedback levels for stress diagnostic
-const initialFeedbackLevels = [
+// Initial feedback levels for stress diagnostic - renommé en initialFeedbacks
+const initialFeedbacks: FeedbackLevel[] = [
   {
-    min: 0,
-    max: 13,
+    minScore: 0,
+    maxScore: 13,
     label: "Stress faible",
     description: "Votre niveau de stress est faible. Continuez à prendre soin de vous et à maintenir vos bonnes habitudes de gestion du stress."
   },
   {
-    min: 14,
-    max: 26,
+    minScore: 14,
+    maxScore: 26,
     label: "Stress modéré",
     description: "Votre niveau de stress est modéré. Même si vous semblez gérer votre stress raisonnablement bien, il serait bénéfique d'explorer de nouvelles stratégies de gestion du stress pour améliorer votre bien-être."
   },
   {
-    min: 27,
-    max: 40,
+    minScore: 27,
+    maxScore: 40,
     label: "Stress élevé",
     description: "Votre niveau de stress est élevé. Il est recommandé de mettre en place des stratégies de gestion du stress plus efficaces et d'envisager de consulter un professionnel si ce niveau de stress persiste."
   }
@@ -143,24 +165,19 @@ export const useDiagnosticStore = create<DiagnosticState>()(
     (set, get) => ({
       questions: initialQuestions,
       results: [],
-      stressFeedbackLevels: initialFeedbackLevels,
+      feedbacks: initialFeedbacks,
       
-      updateQuestion: (id, data) => {
+      updateQuestion: (question) => {
         set(state => ({
           questions: state.questions.map(q => 
-            q.id === id ? { ...q, ...data } : q
+            q.id === question.id ? question : q
           )
         }));
       },
       
       addQuestion: (question) => {
-        const newQuestion: StressQuestion = {
-          id: Math.random().toString(36).substring(2, 9),
-          ...question
-        };
-        
         set(state => ({
-          questions: [...state.questions, newQuestion]
+          questions: [...state.questions, question]
         }));
       },
       
@@ -168,6 +185,11 @@ export const useDiagnosticStore = create<DiagnosticState>()(
         set(state => ({
           questions: state.questions.filter(q => q.id !== id)
         }));
+      },
+      
+      // Alias pour removeQuestion
+      deleteQuestion: (id) => {
+        get().removeQuestion(id);
       },
       
       reorderQuestions: (questionIds) => {
@@ -188,11 +210,9 @@ export const useDiagnosticStore = create<DiagnosticState>()(
         });
       },
       
-      updateFeedbackLevel: (index, data) => {
-        set(state => ({
-          stressFeedbackLevels: state.stressFeedbackLevels.map((level, i) => 
-            i === index ? { ...level, ...data } : level
-          )
+      updateFeedback: (newFeedbacks) => {
+        set(() => ({
+          feedbacks: newFeedbacks
         }));
       },
       
@@ -220,14 +240,24 @@ export const useDiagnosticStore = create<DiagnosticState>()(
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       },
       
+      // Alias pour getResultsForUser
+      getUserResults: (userId) => {
+        return get().getResultsForUser(userId);
+      },
+      
+      // Nouvelle méthode pour récupérer tous les résultats
+      getAllResults: () => {
+        return get().results;
+      },
+      
       getLatestResultForUser: (userId) => {
         const userResults = get().getResultsForUser(userId);
         return userResults.length > 0 ? userResults[0] : undefined;
       },
       
       getFeedbackForScore: (score) => {
-        const feedback = get().stressFeedbackLevels.find(
-          level => score >= level.min && score <= level.max
+        const feedback = get().feedbacks.find(
+          level => score >= level.minScore && score <= level.maxScore
         );
         
         if (feedback) {
