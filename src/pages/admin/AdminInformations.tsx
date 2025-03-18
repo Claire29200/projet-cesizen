@@ -1,11 +1,10 @@
-
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useContentStore } from "@/store/contentStore";
+import { useContentStore, InfoPage, ContentSection } from "@/store/contentStore";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import {
@@ -14,7 +13,6 @@ import {
   DeletePageDialog,
   EditPageForm
 } from "@/components/admin/info-pages";
-import { InfoPage, Section } from "@/store/contentStore";
 
 const AdminInformations = () => {
   const { infoPages, addInfoPage, updateInfoPage, removeInfoPage } = useContentStore();
@@ -28,7 +26,7 @@ const AdminInformations = () => {
     title: string;
     slug: string;
     isPublished: boolean;
-    sections: Omit<Section, "id" | "updatedAt">[];
+    sections: Omit<ContentSection, "id" | "updatedAt">[];
   }) => {
     if (!pageData.title || !pageData.slug) {
       toast({
@@ -56,7 +54,7 @@ const AdminInformations = () => {
       ...section,
       id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
       updatedAt: new Date().toISOString(),
-    }));
+    })) as ContentSection[];
     
     addInfoPage({
       title: pageData.title,

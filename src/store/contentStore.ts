@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -6,17 +7,17 @@ export interface ContentSection {
   id: string;
   title: string;
   content: string;
-  updatedAt: Date;
+  updatedAt: string | Date;
 }
 
-interface InfoPage {
+export interface InfoPage {
   id: string;
   title: string;
   slug: string;
   sections: ContentSection[];
   isPublished: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 interface ContentState {

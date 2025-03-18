@@ -20,7 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Section } from "@/store/contentStore";
+import { ContentSection } from "@/store/contentStore";
 
 interface AddPageDialogProps {
   isOpen: boolean;
@@ -29,7 +29,7 @@ interface AddPageDialogProps {
     title: string;
     slug: string;
     isPublished: boolean;
-    sections: Omit<Section, "id" | "updatedAt">[];
+    sections: Omit<ContentSection, "id" | "updatedAt">[];
   }) => void;
 }
 

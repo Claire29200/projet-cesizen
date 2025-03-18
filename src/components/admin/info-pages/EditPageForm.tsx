@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
-import { InfoPage, Section } from "@/store/contentStore";
+import { InfoPage, ContentSection } from "@/store/contentStore";
 
 interface EditPageFormProps {
   page: InfoPage;
@@ -105,7 +104,7 @@ export const EditPageForm = ({
             </Button>
           </div>
           
-          {page.sections.map((section: Section, index: number) => (
+          {page.sections.map((section: ContentSection, index: number) => (
             <Card key={section.id || index} className="mb-6">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-center">
