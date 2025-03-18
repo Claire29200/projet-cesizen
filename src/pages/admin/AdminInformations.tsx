@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -34,7 +35,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useContentStore } from "@/store/contentStore";
 import { motion } from "framer-motion";
-import { Search, Plus, Edit, Trash2, Eye, FileText } from "lucide-react";
+import { Search, Plus, Edit, Trash2, Eye } from "lucide-react";
 
 const AdminInformations = () => {
   const { infoPages, addInfoPage, updateInfoPage, removeInfoPage } = useContentStore();
