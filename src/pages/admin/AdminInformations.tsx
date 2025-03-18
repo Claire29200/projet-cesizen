@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -38,7 +37,7 @@ import { motion } from "framer-motion";
 import { Search, Plus, Edit, Trash2, Eye, FileText } from "lucide-react";
 
 const AdminInformations = () => {
-  const { infoPages, addInfoPage, updateInfoPage, removeInfoPage } = useContentStore(); // Utiliser removeInfoPage au lieu de deleteInfoPage
+  const { infoPages, addInfoPage, updateInfoPage, removeInfoPage } = useContentStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddPageDialogOpen, setIsAddPageDialogOpen] = useState(false);
   const [isDeletePageDialogOpen, setIsDeletePageDialogOpen] = useState(false);
@@ -124,7 +123,6 @@ const AdminInformations = () => {
       return;
     }
     
-    // Validate that sections have both title and content
     const isValidSections = newPageData.sections.every(
       (section) => section.title.trim() !== "" && section.content.trim() !== ""
     );
@@ -138,19 +136,17 @@ const AdminInformations = () => {
       return;
     }
     
-    // Generate IDs for sections and add updatedAt field
     const sectionsWithIds = newPageData.sections.map((section) => ({
       ...section,
       id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
-      updatedAt: new Date(), // Ajout de updatedAt pour chaque section
+      updatedAt: new Date(),
     }));
     
     addInfoPage({
-      ...newPageData,
-      id: Date.now().toString(),
+      title: newPageData.title,
+      slug: newPageData.slug,
+      isPublished: newPageData.isPublished,
       sections: sectionsWithIds,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
     
     setNewPageData({
@@ -180,7 +176,6 @@ const AdminInformations = () => {
       return;
     }
     
-    // Validate that sections have both title and content
     const isValidSections = selectedPage.sections.every(
       (section: any) => section.title.trim() !== "" && section.content.trim() !== ""
     );
@@ -211,7 +206,7 @@ const AdminInformations = () => {
   const handleDeletePage = () => {
     if (!selectedPage) return;
     
-    removeInfoPage(selectedPage.id); // Utiliser removeInfoPage au lieu de deleteInfoPage
+    removeInfoPage(selectedPage.id);
     setIsDeletePageDialogOpen(false);
     setSelectedPage(null);
     
