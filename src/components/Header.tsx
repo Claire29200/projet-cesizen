@@ -46,11 +46,14 @@ export function Header() {
               className="flex items-center"
               aria-label="Accueil"
             >
-              <div className="w-10 h-10 rounded-full bg-mental-500 flex items-center justify-center text-white font-semibold text-lg mr-2">
-                SM
+              <div className="w-10 h-10 rounded-full bg-cesi-500 flex items-center justify-center text-white font-semibold text-lg mr-2">
+                <svg viewBox="0 0 100 100" width="24" height="24" className="fill-current">
+                  <path d="M50 10 C60 30, 80 40, 50 60 C20 40, 40 30, 50 10" strokeWidth="2" className="stroke-white"/>
+                </svg>
               </div>
-              <div className="font-semibold text-xl tracking-tight text-mental-800">
-                Santé<span className="text-mental-500">Mentale</span>
+              <div className="font-semibold text-xl tracking-tight">
+                <span className="text-cesi-500">CESI</span>
+                <span className="text-zen-500">ZEN</span>
               </div>
             </Link>
           </div>
@@ -61,8 +64,8 @@ export function Header() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`transition-colors duration-200 font-medium hover:text-mental-500 ${
-                  location.pathname === item.path ? "text-mental-500" : "text-mental-700"
+                className={`transition-colors duration-200 font-medium hover:text-cesi-500 ${
+                  location.pathname === item.path ? "text-cesi-500" : "text-cesi-700"
                 }`}
               >
                 {item.title}
@@ -129,8 +132,8 @@ export function Header() {
                 to={item.path}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                   location.pathname === item.path
-                    ? "bg-mental-100 text-mental-500"
-                    : "text-mental-700 hover:bg-mental-50 hover:text-mental-500"
+                    ? "bg-cesi-100 text-cesi-500"
+                    : "text-cesi-700 hover:bg-cesi-50 hover:text-cesi-500"
                 }`}
               >
                 {item.title}

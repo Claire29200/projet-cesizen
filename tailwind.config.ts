@@ -63,18 +63,32 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				mental: {
-					50: '#f5f7fa',
-					100: '#e9eef5',
-					200: '#d2dde9',
-					300: '#aec2d6',
-					400: '#84a0be',
-					500: '#6483a9',
-					600: '#506a8d',
-					700: '#425873',
-					800: '#394b60',
-					900: '#334052',
-					950: '#222b38',
+				// On remplace mental par cesi
+				cesi: {
+					50: '#f2fcf6',
+					100: '#e6f9ee',
+					200: '#bff0d4',
+					300: '#86e1b1',
+					400: '#43c785', // Vert clair
+					500: '#00B65B', // Vert principal
+					600: '#00a34f',
+					700: '#007e3d',
+					800: '#006331',
+					900: '#00341b',
+					950: '#001a0d',
+				},
+				zen: {
+					50: '#fefce8',
+					100: '#fef9c3',
+					200: '#fef08a',
+					300: '#fde047',
+					400: '#facc15', // Jaune clair
+					500: '#f0c000', // Jaune principal
+					600: '#ca8a04',
+					700: '#a16207',
+					800: '#854d0e',
+					900: '#713f12',
+					950: '#422006',
 				}
 			},
 			borderRadius: {
