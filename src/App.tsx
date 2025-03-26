@@ -18,6 +18,7 @@ import AdminDiagnostics from "./pages/admin/AdminDiagnostics";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFound from "./pages/NotFound";
+import { SessionManager } from "./components/auth/SessionManager";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <SessionManager />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/informations" element={<InformationsList />} />

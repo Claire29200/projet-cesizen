@@ -8,18 +8,24 @@ interface User {
   email: string;
   name: string;
   isAdmin: boolean;
+  lastLogin?: string;
+  loginCount?: number;
 }
 
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  authToken: string | null;
+  sessionExpiresAt: number | null;
+  failedLoginAttempts: number;
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  logout: (showConfirmation?: boolean) => void;
   updateProfile: (userData: Partial<User>) => void;
   resetPassword: (email: string) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+  confirmLogout: (confirm: boolean) => void;
 }
 
 // Mock users for demonstration
@@ -30,6 +36,8 @@ const mockUsers = [
     password: 'admin123',
     name: 'Admin',
     isAdmin: true,
+    lastLogin: new Date().toISOString(),
+    loginCount: 15,
   },
   {
     id: '2',
@@ -37,6 +45,8 @@ const mockUsers = [
     password: 'user123',
     name: 'Utilisateur Test',
     isAdmin: false,
+    lastLogin: new Date().toISOString(),
+    loginCount: 8,
   }
 ];
 
@@ -46,6 +56,10 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       isAdmin: false,
+      authToken: null,
+      sessionExpiresAt: null,
+      failedLoginAttempts: 0,
+      showLogoutConfirmation: false,
       
       login: async (email, password) => {
         // Simulating API call delay
@@ -57,14 +71,35 @@ export const useAuthStore = create<AuthState>()(
         
         if (user) {
           const { password: _, ...userWithoutPassword } = user;
+          
+          // Générer un token et une expiration fictifs pour la démo
+          const token = `mock-jwt-token-${Math.random().toString(36).substring(2)}`;
+          const expiresAt = Date.now() + 7200000; // 2 heures
+          
+          // Mise à jour des informations de connexion
+          const updatedUser = {
+            ...userWithoutPassword,
+            lastLogin: new Date().toISOString(),
+            loginCount: (userWithoutPassword.loginCount || 0) + 1
+          };
+          
           set({
-            user: userWithoutPassword,
+            user: updatedUser,
             isAuthenticated: true,
             isAdmin: user.isAdmin,
+            authToken: token,
+            sessionExpiresAt: expiresAt,
+            failedLoginAttempts: 0,
           });
+          
           toast.success('Connexion réussie');
           return true;
         } else {
+          // Incrémenter le nombre de tentatives échouées
+          set(state => ({
+            failedLoginAttempts: state.failedLoginAttempts + 1
+          }));
+          
           toast.error('Email ou mot de passe incorrect');
           return false;
         }
@@ -87,25 +122,51 @@ export const useAuthStore = create<AuthState>()(
           email,
           name,
           isAdmin: false,
+          lastLogin: new Date().toISOString(),
+          loginCount: 1
         };
+        
+        const token = `mock-jwt-token-${Math.random().toString(36).substring(2)}`;
+        const expiresAt = Date.now() + 7200000; // 2 heures
         
         set({
           user: newUser,
           isAuthenticated: true,
           isAdmin: false,
+          authToken: token,
+          sessionExpiresAt: expiresAt,
         });
         
         toast.success('Compte créé avec succès');
         return true;
       },
       
-      logout: () => {
-        set({
-          user: null,
-          isAuthenticated: false,
-          isAdmin: false,
-        });
-        toast.success('Déconnexion réussie');
+      confirmLogout: (confirm) => {
+        if (confirm) {
+          set({
+            user: null,
+            isAuthenticated: false,
+            isAdmin: false,
+            authToken: null,
+            sessionExpiresAt: null,
+          });
+          toast.success('Déconnexion réussie');
+        }
+      },
+      
+      logout: (showConfirmation = true) => {
+        // Si on demande une confirmation, on ne fait rien ici
+        // L'action réelle sera effectuée via confirmLogout
+        if (!showConfirmation) {
+          set({
+            user: null,
+            isAuthenticated: false,
+            isAdmin: false,
+            authToken: null,
+            sessionExpiresAt: null,
+          });
+          toast.success('Déconnexion réussie');
+        }
       },
       
       updateProfile: (userData) => {
@@ -149,6 +210,7 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
         isAdmin: state.isAdmin,
+        authToken: state.authToken,
       }),
     }
   )

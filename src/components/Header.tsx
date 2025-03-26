@@ -2,16 +2,18 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { Menu, X, User } from "lucide-react";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, isAdmin, logout } = useAuthStore();
+  const { isAuthenticated, isAdmin, logout, confirmLogout } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +27,19 @@ export function Header() {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
+
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true);
+  };
+
+  const handleConfirmLogout = () => {
+    confirmLogout(true);
+    setShowLogoutDialog(false);
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutDialog(false);
+  };
 
   const menuItems = [
     { title: "Accueil", path: "/" },
@@ -99,7 +114,8 @@ export function Header() {
                     Profil
                   </Link>
                 </Button>
-                <Button variant="ghost" onClick={logout}>
+                <Button variant="ghost" onClick={handleLogoutClick} className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                  <LogOut className="w-4 h-4 mr-2" />
                   Déconnexion
                 </Button>
               </div>
@@ -165,8 +181,8 @@ export function Header() {
                   </Button>
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-center"
-                    onClick={logout}
+                    className="w-full justify-center text-destructive"
+                    onClick={handleLogoutClick}
                   >
                     Déconnexion
                   </Button>
@@ -176,6 +192,13 @@ export function Header() {
           </div>
         </div>
       )}
+
+      {/* Dialogue de confirmation de déconnexion */}
+      <LogoutConfirmDialog 
+        isOpen={showLogoutDialog}
+        onClose={handleCancelLogout}
+        onConfirm={handleConfirmLogout}
+      />
     </header>
   );
 }
