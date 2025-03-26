@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -10,8 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/store/authStore";
 import { useToast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
-import { User, Lock, History, BookOpen, Eye, EyeOff } from "lucide-react";
+import { User, Lock, History, BookOpen, Eye, EyeOff, LogOut } from "lucide-react";
 import { useDiagnosticStore } from "@/store/diagnosticStore";
+import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 
 const Profile = () => {
   const { user, updateProfile, changePassword, logout } = useAuthStore();
@@ -28,6 +28,7 @@ const Profile = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   
   // Get user's diagnostic results if they exist
   const userResults = user ? getUserResults(user.id) : [];
@@ -109,6 +110,15 @@ const Profile = () => {
     }
   };
   
+  const handleLogout = () => {
+    setShowLogoutDialog(true);
+  };
+  
+  const confirmLogout = () => {
+    logout();
+    setShowLogoutDialog(false);
+  };
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -185,8 +195,10 @@ const Profile = () => {
                   <CardContent>
                     <Button
                       variant="destructive"
-                      onClick={logout}
+                      onClick={handleLogout}
+                      className="flex items-center gap-2"
                     >
+                      <LogOut className="h-4 w-4" />
                       Se déconnecter
                     </Button>
                   </CardContent>
@@ -350,6 +362,12 @@ const Profile = () => {
       </main>
       
       <Footer />
+      
+      <LogoutConfirmDialog 
+        isOpen={showLogoutDialog} 
+        onClose={() => setShowLogoutDialog(false)} 
+        onConfirm={confirmLogout} 
+      />
     </div>
   );
 };

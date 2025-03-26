@@ -4,15 +4,14 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useDiagnosticStore } from "@/store/diagnosticStore";
 import { useAuthStore } from "@/store/authStore";
-import { AlertTriangle, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
+import { DiagnosticQuestion } from "@/components/diagnostic/DiagnosticQuestion";
+import { DiagnosticResultView } from "@/components/diagnostic/DiagnosticResult";
 
 const DiagnosticPage = () => {
   const { questions, saveResult, getFeedbackForScore } = useDiagnosticStore();
@@ -28,10 +27,13 @@ const DiagnosticPage = () => {
   const [feedback, setFeedback] = useState<{ label: string; description: string } | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   
-  const sortedQuestions = [...questions].sort((a, b) => a.order - b.order);
+  // Filtrer les questions actives uniquement
+  const activeQuestions = questions
+    .filter(q => q.isActive)
+    .sort((a, b) => a.order - b.order);
   
-  const currentQuestion = sortedQuestions[currentStep];
-  const progress = (currentStep / sortedQuestions.length) * 100;
+  const currentQuestion = activeQuestions[currentStep];
+  const progress = (currentStep / activeQuestions.length) * 100;
   
   const handleAnswer = (value: number) => {
     if (isAnimating) return;
@@ -44,7 +46,7 @@ const DiagnosticPage = () => {
   
   const handleNext = () => {
     if (isAnimating) return;
-    if (currentStep < sortedQuestions.length - 1) {
+    if (currentStep < activeQuestions.length - 1) {
       setIsAnimating(true);
       setTimeout(() => {
         setCurrentStep(prev => prev + 1);
@@ -70,7 +72,7 @@ const DiagnosticPage = () => {
     let score = 0;
     const formattedAnswers = [];
     
-    for (const question of sortedQuestions) {
+    for (const question of activeQuestions) {
       const answer = answers[question.id];
       if (answer !== undefined) {
         score += question.points[answer];
@@ -93,6 +95,12 @@ const DiagnosticPage = () => {
     setTotalScore(score);
     setFeedback(getFeedbackForScore(score));
     setShowResults(true);
+    
+    // Afficher un toast de confirmation
+    toast({
+      title: "Diagnostic terminé",
+      description: "Votre diagnostic de stress a été complété avec succès.",
+    });
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -141,51 +149,20 @@ const DiagnosticPage = () => {
                     ></div>
                   </div>
                   <p className="text-sm text-mental-500 mb-8">
-                    Question {currentStep + 1} sur {sortedQuestions.length}
+                    Question {currentStep + 1} sur {activeQuestions.length}
                   </p>
                 </div>
                 
                 <Card className="mb-8">
                   <CardContent className="pt-6">
                     <AnimatePresence mode="wait">
-                      <motion.div
-                        key={currentQuestion?.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <h2 className="text-xl font-medium text-mental-800 mb-6">
-                          {currentQuestion?.question}
-                        </h2>
-                        
-                        <RadioGroup
-                          value={answers[currentQuestion?.id]?.toString()}
-                          onValueChange={(value) => handleAnswer(parseInt(value))}
-                          className="space-y-3"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="0" id="option1" />
-                            <Label htmlFor="option1">Jamais</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="1" id="option2" />
-                            <Label htmlFor="option2">Rarement</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="2" id="option3" />
-                            <Label htmlFor="option3">Parfois</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="3" id="option4" />
-                            <Label htmlFor="option4">Souvent</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="4" id="option5" />
-                            <Label htmlFor="option5">Très souvent</Label>
-                          </div>
-                        </RadioGroup>
-                      </motion.div>
+                      {currentQuestion && (
+                        <DiagnosticQuestion
+                          question={currentQuestion}
+                          currentAnswer={answers[currentQuestion.id]}
+                          onAnswer={handleAnswer}
+                        />
+                      )}
                     </AnimatePresence>
                   </CardContent>
                 </Card>
@@ -205,7 +182,7 @@ const DiagnosticPage = () => {
                     onClick={handleNext}
                     disabled={answers[currentQuestion?.id] === undefined}
                   >
-                    {currentStep < sortedQuestions.length - 1 ? (
+                    {currentStep < activeQuestions.length - 1 ? (
                       <>
                         Suivant
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -223,81 +200,15 @@ const DiagnosticPage = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="text-center mb-12">
-                  <CheckCircle2 className="h-16 w-16 text-mental-500 mx-auto mb-4" />
-                  <h1 className="text-3xl md:text-4xl font-bold text-mental-800 mb-4">
-                    Votre évaluation est terminée
-                  </h1>
-                  <p className="text-lg text-mental-600">
-                    Voici les résultats de votre évaluation de stress.
-                  </p>
-                </div>
-                
-                <Card className="mb-8">
-                  <CardContent className="pt-6">
-                    <div className="text-center mb-6">
-                      <h2 className="text-xl font-medium text-mental-800 mb-2">
-                        Votre niveau de stress : {feedback?.label}
-                      </h2>
-                      <p className="text-sm text-mental-500 mb-4">
-                        Score : {totalScore} sur {sortedQuestions.length * 4}
-                      </p>
-                      
-                      <Progress 
-                        value={(totalScore / (sortedQuestions.length * 4)) * 100} 
-                        className="h-3 mb-6" 
-                      />
-                      
-                      <div className="flex justify-between text-xs text-mental-500 px-1 mb-8">
-                        <span>Faible</span>
-                        <span>Modéré</span>
-                        <span>Élevé</span>
-                      </div>
-                    </div>
-                    
-                    <div className="p-6 bg-mental-50 rounded-lg mb-6">
-                      <h3 className="font-medium text-mental-800 mb-4">Interprétation</h3>
-                      <p className="text-mental-700">{feedback?.description}</p>
-                    </div>
-                    
-                    {!isAuthenticated && (
-                      <div className="p-4 border border-yellow-200 bg-yellow-50 rounded-lg flex items-start space-x-3">
-                        <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <h4 className="font-medium text-mental-800 mb-1">Créez un compte pour suivre vos résultats</h4>
-                          <p className="text-sm text-mental-600 mb-3">
-                            Vous n'êtes pas connecté. Créez un compte pour enregistrer vos résultats et suivre votre évolution au fil du temps.
-                          </p>
-                          <div className="flex flex-wrap gap-3">
-                            <Button 
-                              size="sm" 
-                              variant="outline" 
-                              onClick={() => navigate('/inscription')}
-                            >
-                              Créer un compte
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="ghost" 
-                              onClick={() => navigate('/connexion')}
-                            >
-                              Se connecter
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-                
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button variant="outline" onClick={handleStartOver}>
-                    Refaire le diagnostic
-                  </Button>
-                  <Button onClick={() => navigate('/informations/stress')}>
-                    Consulter nos ressources sur le stress
-                  </Button>
-                </div>
+                {feedback && (
+                  <DiagnosticResultView
+                    totalScore={totalScore}
+                    maxScore={activeQuestions.length * 4}
+                    feedback={feedback}
+                    resultId={resultId}
+                    onStartOver={handleStartOver}
+                  />
+                )}
               </motion.div>
             )}
           </AnimatePresence>
