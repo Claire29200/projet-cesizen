@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, User } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -35,7 +36,7 @@ export function Header() {
   return (
     <header 
       className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+        isScrolled ? "bg-white/90 dark:bg-background/90 backdrop-blur-md shadow-sm" : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,7 +66,7 @@ export function Header() {
                 key={item.path}
                 to={item.path}
                 className={`transition-colors duration-200 font-medium hover:text-cesi-500 ${
-                  location.pathname === item.path ? "text-cesi-500" : "text-cesi-700"
+                  location.pathname === item.path ? "text-cesi-500" : "text-cesi-700 dark:text-white"
                 }`}
               >
                 {item.title}
@@ -74,6 +75,8 @@ export function Header() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-3">
+            <ThemeToggle />
+            
             {!isAuthenticated ? (
               <>
                 <Button asChild variant="ghost">
@@ -104,7 +107,8 @@ export function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-1">
+            <ThemeToggle />
             <Button 
               variant="ghost" 
               size="icon"
@@ -125,21 +129,21 @@ export function Header() {
       {/* Mobile menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm animate-fade-in">
+          <div className="px-2 pt-2 pb-3 space-y-1 bg-white/95 dark:bg-background/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm animate-fade-in">
             {menuItems.map(item => (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                   location.pathname === item.path
-                    ? "bg-cesi-100 text-cesi-500"
-                    : "text-cesi-700 hover:bg-cesi-50 hover:text-cesi-500"
+                    ? "bg-cesi-100 dark:bg-cesi-900/20 text-cesi-500"
+                    : "text-cesi-700 dark:text-gray-300 hover:bg-cesi-50 dark:hover:bg-cesi-900/10 hover:text-cesi-500"
                 }`}
               >
                 {item.title}
               </Link>
             ))}
-            <div className="pt-4 pb-1 border-t border-gray-200">
+            <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700">
               {!isAuthenticated ? (
                 <div className="flex flex-col gap-2 px-3">
                   <Button asChild variant="outline" className="w-full justify-center">
