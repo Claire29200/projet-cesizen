@@ -1,22 +1,19 @@
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 import { Logo } from "@/components/header/Logo";
 import { DesktopNavigation } from "@/components/header/DesktopNavigation";
 import { AuthButtons } from "@/components/header/AuthButtons";
 import { MobileMenu } from "@/components/header/MobileMenu";
+import { MobileMenuToggle } from "@/components/header/MobileMenuToggle";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, isAdmin, logout } = useAuthStore();
+  const { isAuthenticated, isAdmin } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,17 +28,8 @@ export function Header() {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  const handleLogoutClick = () => {
-    setShowLogoutDialog(true);
-  };
-
-  const handleConfirmLogout = () => {
-    logout();
-    setShowLogoutDialog(false);
-  };
-
-  const handleCancelLogout = () => {
-    setShowLogoutDialog(false);
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const menuItems = [
@@ -71,26 +59,17 @@ export function Header() {
             <AuthButtons 
               isAuthenticated={isAuthenticated} 
               isAdmin={isAdmin} 
-              onLogoutClick={handleLogoutClick} 
+              onLogoutClick={() => {}} 
             />
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-1">
             <ThemeToggle />
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-expanded={isMobileMenuOpen}
-              aria-label="Menu principal"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </Button>
+            <MobileMenuToggle 
+              isOpen={isMobileMenuOpen}
+              onClick={toggleMobileMenu}
+            />
           </div>
         </div>
       </div>
@@ -102,14 +81,7 @@ export function Header() {
         currentPath={location.pathname}
         isAuthenticated={isAuthenticated}
         isAdmin={isAdmin}
-        onLogoutClick={handleLogoutClick}
-      />
-
-      {/* Dialogue de confirmation de déconnexion */}
-      <LogoutConfirmDialog 
-        isOpen={showLogoutDialog}
-        onClose={handleCancelLogout}
-        onConfirm={handleConfirmLogout}
+        onLogoutClick={() => {}}
       />
     </header>
   );

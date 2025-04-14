@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { LogoutButton } from "./LogoutButton";
 
 interface NavigationItem {
   title: string;
@@ -21,8 +22,7 @@ export function MobileMenu({
   items, 
   currentPath, 
   isAuthenticated, 
-  isAdmin, 
-  onLogoutClick 
+  isAdmin
 }: MobileMenuProps) {
   if (!isOpen) return null;
 
@@ -62,13 +62,7 @@ export function MobileMenu({
               <Button asChild variant="outline" className="w-full justify-center">
                 <Link to="/profil">Profil</Link>
               </Button>
-              <Button 
-                variant="ghost" 
-                className="w-full justify-center text-destructive"
-                onClick={onLogoutClick}
-              >
-                Déconnexion
-              </Button>
+              <LogoutButton />
             </div>
           )}
         </div>

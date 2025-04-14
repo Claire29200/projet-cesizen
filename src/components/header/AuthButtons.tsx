@@ -1,7 +1,8 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { User, LogOut } from "lucide-react";
+import { User } from "lucide-react";
+import { LogoutButton } from "./LogoutButton";
 
 interface AuthButtonsProps {
   isAuthenticated: boolean;
@@ -9,7 +10,7 @@ interface AuthButtonsProps {
   onLogoutClick: () => void;
 }
 
-export function AuthButtons({ isAuthenticated, isAdmin, onLogoutClick }: AuthButtonsProps) {
+export function AuthButtons({ isAuthenticated, isAdmin }: AuthButtonsProps) {
   if (!isAuthenticated) {
     return (
       <>
@@ -36,14 +37,7 @@ export function AuthButtons({ isAuthenticated, isAdmin, onLogoutClick }: AuthBut
           Profil
         </Link>
       </Button>
-      <Button 
-        variant="ghost" 
-        onClick={onLogoutClick} 
-        className="text-destructive hover:text-destructive hover:bg-destructive/10"
-      >
-        <LogOut className="w-4 h-4 mr-2" />
-        Déconnexion
-      </Button>
+      <LogoutButton />
     </div>
   );
 }
