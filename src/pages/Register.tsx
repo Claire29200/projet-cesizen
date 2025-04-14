@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { Footer } from "@/components/Footer";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const [name, setName] = useState("");
