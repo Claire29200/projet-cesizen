@@ -6,26 +6,23 @@ import { InfoPage, Section } from "@/models/content";
 export const contentController = {
   // Récupération de toutes les pages d'information
   getInfoPages(): InfoPage[] {
-    return useContentStore.getState().infoPages;
+    const pages = useContentStore.getState().infoPages;
+    return pages as InfoPage[];
   },
 
   // Récupération d'une page d'information par son slug
   getInfoPageBySlug(slug: string): InfoPage | undefined {
-    return useContentStore.getState().getInfoPageBySlug(slug);
+    const page = useContentStore.getState().getInfoPageBySlug(slug);
+    return page as InfoPage | undefined;
   },
 
   // Ajout d'une nouvelle page d'information
   addInfoPage(page: Omit<InfoPage, "id" | "createdAt" | "updatedAt">): InfoPage {
     try {
       const { addInfoPage } = useContentStore.getState();
-      const newPage = addInfoPage({
-        ...page,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
+      const newPage = addInfoPage(page);
       
-      return newPage;
+      return newPage as InfoPage;
     } catch (error) {
       toast({
         title: "Erreur",
@@ -40,12 +37,12 @@ export const contentController = {
   updateInfoPage(pageId: string, updates: Partial<InfoPage>): InfoPage {
     try {
       const { updateInfoPage } = useContentStore.getState();
-      const updatedPage = updateInfoPage(pageId, {
+      const updatedPage = updateInfoPage({
         ...updates,
-        updatedAt: new Date().toISOString(),
-      });
+        id: pageId,
+      } as InfoPage);
       
-      return updatedPage;
+      return updatedPage as InfoPage;
     } catch (error) {
       toast({
         title: "Erreur",
@@ -60,7 +57,8 @@ export const contentController = {
   deleteInfoPage(pageId: string): boolean {
     try {
       const { deleteInfoPage } = useContentStore.getState();
-      return deleteInfoPage(pageId);
+      deleteInfoPage(pageId);
+      return true;
     } catch (error) {
       toast({
         title: "Erreur",

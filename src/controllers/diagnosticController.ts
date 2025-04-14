@@ -12,17 +12,25 @@ export const diagnosticController = {
 
   // Calcul du résultat du diagnostic
   calculateResult(answers: Record<string, number>): DiagnosticResult {
-    const { calculateScore, getFeedbackForScore } = useDiagnosticStore.getState();
+    const store = useDiagnosticStore.getState();
     
     // Calculer le score total
-    const totalScore = calculateScore(answers);
+    let totalScore = 0;
+    const questions = store.questions.filter(q => q.isActive);
+    
+    for (const questionId in answers) {
+      const question = questions.find(q => q.id === questionId);
+      if (question && question.points) {
+        totalScore += question.points[answers[questionId]];
+      }
+    }
     
     // Obtenir le feedback correspondant au score
-    const feedback = getFeedbackForScore(totalScore);
+    const feedback = store.getFeedbackForScore(totalScore);
     
     return {
       totalScore,
-      feedbackTitle: feedback.title,
+      feedbackProvided: feedback.label,
       feedbackDescription: feedback.description,
       date: new Date().toISOString(),
       answers,
@@ -33,13 +41,19 @@ export const diagnosticController = {
   async saveUserResult(userId: string, result: DiagnosticResult) {
     try {
       // Enregistrer le résultat dans le store local
-      const { addUserResult } = useDiagnosticStore.getState();
-      const resultId = addUserResult(userId, {
-        ...result,
-        id: crypto.randomUUID(),
-        feedbackProvided: result.feedbackTitle,
-        userId
-      });
+      const store = useDiagnosticStore.getState();
+      const formattedResult = {
+        userId,
+        totalScore: result.totalScore,
+        answers: Object.entries(result.answers as Record<string, number>).map(([questionId, answer]) => ({
+          questionId,
+          answer
+        })),
+        feedbackProvided: result.feedbackProvided || "",
+        date: new Date()
+      };
+      
+      const resultId = store.saveResult(formattedResult);
       
       // Ici, on pourrait également sauvegarder le résultat dans Supabase
       // si une table appropriée était disponible
@@ -56,8 +70,18 @@ export const diagnosticController = {
   },
 
   // Récupération des résultats d'un utilisateur
-  getUserResults(userId: string) {
+  getUserResults(userId: string): DiagnosticResult[] {
     const { getUserResults } = useDiagnosticStore.getState();
-    return getUserResults(userId);
+    const results = getUserResults(userId);
+    
+    return results.map(result => ({
+      id: result.id,
+      userId: result.userId,
+      totalScore: result.totalScore,
+      feedbackProvided: result.feedbackProvided,
+      feedbackDescription: result.feedbackProvided ? useDiagnosticStore.getState().getFeedbackForScore(result.totalScore).description : "",
+      date: result.date.toString(),
+      answers: result.answers
+    })) as DiagnosticResult[];
   }
 };

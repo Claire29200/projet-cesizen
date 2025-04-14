@@ -97,7 +97,10 @@ export const authController = {
     }
 
     // Réinitialiser l'état d'authentification dans le store
-    useAuthStore.getState().resetAuth();
+    const authStore = useAuthStore.getState();
+    if (authStore.logout) {
+      authStore.logout();
+    }
     
     return { success: true };
   },
@@ -121,7 +124,7 @@ export const authController = {
 
       // Mise à jour du store après modification réussie
       const state = useAuthStore.getState();
-      if (state.user) {
+      if (state.user && state.updateProfile) {
         state.updateProfile(data);
       }
 

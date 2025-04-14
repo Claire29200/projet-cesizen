@@ -52,7 +52,7 @@ export const DiagnosticHistory = () => {
                   </span>
                 </div>
                 <p className="text-sm text-mental-600">
-                  {getFeedbackForScore(result.totalScore).description}
+                  {result.feedbackDescription || getFeedbackForScore(result.totalScore).description}
                 </p>
               </div>
             ))}
