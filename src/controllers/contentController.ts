@@ -50,7 +50,14 @@ export const contentController = {
   // Mise à jour d'une page d'information
   updateInfoPage(pageId: string, updates: Partial<InfoPage>): InfoPage {
     try {
-      const { updateInfoPage } = useContentStore.getState();
+      const { updateInfoPage, getInfoPageBySlug } = useContentStore.getState();
+      
+      // Get the current page to merge with updates
+      const currentPage = useContentStore.getState().infoPages.find(page => page.id === pageId);
+      
+      if (!currentPage) {
+        throw new Error("Page not found");
+      }
       
       // Ensure sections have updatedAt if provided
       const updatesWithFixedSections = updates.sections 
@@ -63,10 +70,15 @@ export const contentController = {
           } 
         : updates;
       
-      const updatedPage = updateInfoPage({
+      // Create a complete page object by merging current data with updates
+      const updatedPageData = {
+        ...currentPage,
         ...updatesWithFixedSections,
         id: pageId,
-      });
+        updatedAt: new Date()
+      };
+      
+      const updatedPage = updateInfoPage(updatedPageData);
       
       return convertToModelInfoPage(updatedPage);
     } catch (error) {
