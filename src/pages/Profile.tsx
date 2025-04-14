@@ -11,8 +11,9 @@ const Profile = () => {
       
       <main className="flex-grow pt-24 pb-16">
         <div className="container mx-auto px-4">
-          <ProfileHeader defaultTab="profile" />
-          <ProfileTabs />
+          <ProfileHeader defaultTab="profile">
+            <ProfileTabs />
+          </ProfileHeader>
         </div>
       </main>
       

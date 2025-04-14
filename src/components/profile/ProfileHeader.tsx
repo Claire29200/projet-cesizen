@@ -2,12 +2,14 @@
 import { motion } from "framer-motion";
 import { User, Lock, History } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ReactNode } from "react";
 
 interface ProfileHeaderProps {
   defaultTab: string;
+  children: ReactNode;
 }
 
-export const ProfileHeader = ({ defaultTab }: ProfileHeaderProps) => {
+export const ProfileHeader = ({ defaultTab, children }: ProfileHeaderProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -32,7 +34,8 @@ export const ProfileHeader = ({ defaultTab }: ProfileHeaderProps) => {
           </TabsTrigger>
         </TabsList>
         
-        {/* TabsContent is provided by parent component */}
+        {/* Render TabsContent children inside the Tabs context */}
+        {children}
       </Tabs>
     </motion.div>
   );
