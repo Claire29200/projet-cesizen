@@ -3,26 +3,40 @@ import { toast } from "@/components/ui/use-toast";
 import { useContentStore } from "@/store/contentStore";
 import { InfoPage, Section } from "@/models/content";
 
+// Helper function to convert between store and model types
+const convertToModelInfoPage = (page: any): InfoPage => {
+  return page as InfoPage;
+};
+
 export const contentController = {
   // Récupération de toutes les pages d'information
   getInfoPages(): InfoPage[] {
     const pages = useContentStore.getState().infoPages;
-    return pages as InfoPage[];
+    return pages.map(convertToModelInfoPage);
   },
 
   // Récupération d'une page d'information par son slug
   getInfoPageBySlug(slug: string): InfoPage | undefined {
     const page = useContentStore.getState().getInfoPageBySlug(slug);
-    return page as InfoPage | undefined;
+    return page ? convertToModelInfoPage(page) : undefined;
   },
 
   // Ajout d'une nouvelle page d'information
   addInfoPage(page: Omit<InfoPage, "id" | "createdAt" | "updatedAt">): InfoPage {
     try {
       const { addInfoPage } = useContentStore.getState();
-      const newPage = addInfoPage(page);
       
-      return newPage as InfoPage;
+      // Convert sections to ensure updatedAt is present
+      const pageWithUpdatedSections = {
+        ...page,
+        sections: page.sections.map(section => ({
+          ...section,
+          updatedAt: section.updatedAt || new Date()
+        }))
+      };
+      
+      const newPage = addInfoPage(pageWithUpdatedSections);
+      return convertToModelInfoPage(newPage);
     } catch (error) {
       toast({
         title: "Erreur",
@@ -37,12 +51,24 @@ export const contentController = {
   updateInfoPage(pageId: string, updates: Partial<InfoPage>): InfoPage {
     try {
       const { updateInfoPage } = useContentStore.getState();
-      const updatedPage = updateInfoPage({
-        ...updates,
-        id: pageId,
-      } as InfoPage);
       
-      return updatedPage as InfoPage;
+      // Ensure sections have updatedAt if provided
+      const updatesWithFixedSections = updates.sections 
+        ? {
+            ...updates,
+            sections: updates.sections.map(section => ({
+              ...section,
+              updatedAt: section.updatedAt || new Date()
+            }))
+          } 
+        : updates;
+      
+      const updatedPage = updateInfoPage({
+        ...updatesWithFixedSections,
+        id: pageId,
+      });
+      
+      return convertToModelInfoPage(updatedPage);
     } catch (error) {
       toast({
         title: "Erreur",

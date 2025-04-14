@@ -3,7 +3,7 @@ export interface Section {
   id: string;
   title: string;
   content: string;
-  updatedAt?: string | Date;
+  updatedAt: string | Date; // Make updatedAt required to match ContentSection in store
 }
 
 export interface InfoPage {
