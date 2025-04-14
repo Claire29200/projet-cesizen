@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -13,7 +12,7 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, isAdmin, logout, confirmLogout } = useAuthStore();
+  const { isAuthenticated, isAdmin, logout } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +32,7 @@ export function Header() {
   };
 
   const handleConfirmLogout = () => {
-    confirmLogout(true);
+    logout();
     setShowLogoutDialog(false);
   };
 

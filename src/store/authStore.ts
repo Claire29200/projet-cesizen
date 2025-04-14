@@ -21,6 +21,7 @@ interface AuthState {
   logout: () => Promise<void>;
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
   resetPassword: (email: string) => Promise<boolean>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -43,17 +44,22 @@ export const useAuthStore = create<AuthState>()(
           }
           
           // Fetch additional user profile
-          const { data: profileData } = await supabase
+          const { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', data.user?.id)
             .single();
           
+          if (profileError) {
+            console.error('Error fetching profile:', profileError);
+          }
+          
           set({
             user: {
               id: data.user?.id ?? '',
               email: data.user?.email ?? '',
-              name: profileData?.name,
+              name: profileData?.name || '',
+              lastLogin: new Date().toISOString(),
             },
             isAuthenticated: true,
             isAdmin: false, // You can modify this based on your roles implementation
@@ -124,14 +130,13 @@ export const useAuthStore = create<AuthState>()(
         if (!currentUser) return false;
         
         try {
-          const { data, error } = await supabase
+          const { error: updateError } = await supabase
             .from('profiles')
             .update(userData)
-            .eq('id', currentUser.id)
-            .select();
+            .eq('id', currentUser.id);
           
-          if (error) {
-            toast.error(error.message);
+          if (updateError) {
+            toast.error(updateError.message);
             return false;
           }
           
@@ -153,7 +158,7 @@ export const useAuthStore = create<AuthState>()(
       
       resetPassword: async (email) => {
         try {
-          const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: window.location.origin + '/nouveau-mot-de-passe'
           });
           
@@ -170,6 +175,38 @@ export const useAuthStore = create<AuthState>()(
           return false;
         }
       },
+
+      changePassword: async (currentPassword, newPassword) => {
+        try {
+          // D'abord, vérifier si l'utilisateur est authentifié avec le mot de passe actuel
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: get().user?.email || '',
+            password: currentPassword
+          });
+
+          if (signInError) {
+            toast.error('Mot de passe actuel incorrect');
+            return false;
+          }
+
+          // Si la vérification réussit, mettre à jour le mot de passe
+          const { error: updateError } = await supabase.auth.updateUser({
+            password: newPassword
+          });
+
+          if (updateError) {
+            toast.error(updateError.message);
+            return false;
+          }
+
+          toast.success('Mot de passe modifié avec succès');
+          return true;
+        } catch (error) {
+          console.error('Change password error:', error);
+          toast.error('Une erreur est survenue lors du changement de mot de passe');
+          return false;
+        }
+      }
     }),
     {
       name: 'auth-storage',

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -14,7 +15,7 @@ import { useDiagnosticStore } from "@/store/diagnosticStore";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 
 const Profile = () => {
-  const { user, updateProfile, changePassword, logout } = useAuthStore();
+  const { user, updateProfile, logout, changePassword } = useAuthStore();
   const { getUserResults, getFeedbackForScore } = useDiagnosticStore();
   const { toast } = useToast();
   
