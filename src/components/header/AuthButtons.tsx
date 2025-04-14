@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { LogoutButton } from "./LogoutButton";
+import { useAuthStore } from "@/store/authStore";
+import { useEffect } from "react";
 
 interface AuthButtonsProps {
   isAuthenticated: boolean;
@@ -11,6 +13,23 @@ interface AuthButtonsProps {
 }
 
 export function AuthButtons({ isAuthenticated, isAdmin }: AuthButtonsProps) {
+  // Créer automatiquement les utilisateurs de démonstration au chargement de l'application
+  const { createDemoUsers } = useAuthStore();
+  
+  useEffect(() => {
+    // Tentative de création des utilisateurs de démonstration au chargement
+    const initDemoUsers = async () => {
+      try {
+        await createDemoUsers();
+        console.log('Utilisateurs de démonstration initialisés');
+      } catch (error) {
+        console.error('Erreur d\'initialisation des utilisateurs de démonstration:', error);
+      }
+    };
+    
+    initDemoUsers();
+  }, [createDemoUsers]);
+
   if (!isAuthenticated) {
     return (
       <>

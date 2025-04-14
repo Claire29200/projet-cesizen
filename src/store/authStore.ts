@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +21,7 @@ interface AuthState {
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
   resetPassword: (email: string) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
+  createDemoUsers: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -33,13 +33,30 @@ export const useAuthStore = create<AuthState>()(
       
       login: async (email, password) => {
         try {
+          // Vérifier s'il s'agit d'un utilisateur de démonstration
+          const isDemo = (email === 'admin@example.com' && password === 'admin123') ||
+                         (email === 'user@example.com' && password === 'user123');
+          
+          // Si c'est un utilisateur de démo, essayer de le créer s'il n'existe pas
+          if (isDemo) {
+            try {
+              await get().createDemoUsers();
+            } catch (demoError) {
+              console.error('Erreur lors de la création des utilisateurs de démonstration:', demoError);
+            }
+          }
+          
+          // Tenter la connexion
           const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
           });
           
           if (error) {
-            toast.error(error.message);
+            console.error('Erreur de connexion:', error.message);
+            toast.error(error.message === 'Invalid login credentials' 
+              ? 'Identifiants invalides. Vérifiez votre email et mot de passe.' 
+              : error.message);
             return false;
           }
           
@@ -54,15 +71,18 @@ export const useAuthStore = create<AuthState>()(
             console.error('Error fetching profile:', profileError);
           }
           
+          const isAdminUser = email === 'admin@example.com';
+          
           set({
             user: {
               id: data.user?.id ?? '',
               email: data.user?.email ?? '',
               name: profileData?.name || '',
+              isAdmin: isAdminUser,
               lastLogin: new Date().toISOString(),
             },
             isAuthenticated: true,
-            isAdmin: false, // You can modify this based on your roles implementation
+            isAdmin: isAdminUser,
           });
           
           toast.success('Connexion réussie');
@@ -71,6 +91,63 @@ export const useAuthStore = create<AuthState>()(
           console.error('Login error:', error);
           toast.error('Une erreur est survenue lors de la connexion');
           return false;
+        }
+      },
+      
+      createDemoUsers: async () => {
+        try {
+          // Vérifier si l'utilisateur admin existe déjà
+          const { data: adminData, error: adminCheckError } = await supabase.auth.signInWithPassword({
+            email: 'admin@example.com',
+            password: 'admin123',
+          });
+          
+          // Si pas d'utilisateur admin, le créer
+          if (adminCheckError && adminCheckError.message.includes('Invalid login credentials')) {
+            console.log('Création de l\'utilisateur admin de démonstration...');
+            const { error: adminCreateError } = await supabase.auth.signUp({
+              email: 'admin@example.com',
+              password: 'admin123',
+              options: {
+                data: {
+                  name: 'Administrateur',
+                  isAdmin: true,
+                }
+              }
+            });
+            
+            if (adminCreateError) {
+              console.error('Erreur lors de la création de l\'utilisateur admin:', adminCreateError);
+            }
+          }
+          
+          // Vérifier si l'utilisateur standard existe déjà
+          const { data: userData, error: userCheckError } = await supabase.auth.signInWithPassword({
+            email: 'user@example.com',
+            password: 'user123',
+          });
+          
+          // Si pas d'utilisateur standard, le créer
+          if (userCheckError && userCheckError.message.includes('Invalid login credentials')) {
+            console.log('Création de l\'utilisateur standard de démonstration...');
+            const { error: userCreateError } = await supabase.auth.signUp({
+              email: 'user@example.com',
+              password: 'user123',
+              options: {
+                data: {
+                  name: 'Utilisateur',
+                  isAdmin: false,
+                }
+              }
+            });
+            
+            if (userCreateError) {
+              console.error('Erreur lors de la création de l\'utilisateur standard:', userCreateError);
+            }
+          }
+        } catch (error) {
+          console.error('Erreur lors de la création des utilisateurs de démonstration:', error);
+          throw error;
         }
       },
       
