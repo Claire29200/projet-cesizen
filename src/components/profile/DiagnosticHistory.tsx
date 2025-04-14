@@ -4,13 +4,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/store/authStore";
 import { useDiagnosticStore } from "@/store/diagnosticStore";
 import { BookOpen } from "lucide-react";
+import { diagnosticController } from "@/controllers/diagnosticController";
+import { useEffect, useState } from "react";
+import { DiagnosticResult } from "@/models/diagnostic";
 
 export const DiagnosticHistory = () => {
   const { user } = useAuthStore();
-  const { getUserResults, getFeedbackForScore } = useDiagnosticStore();
+  const { getFeedbackForScore } = useDiagnosticStore();
+  const [userResults, setUserResults] = useState<DiagnosticResult[]>([]);
   
-  // Get user's diagnostic results if they exist
-  const userResults = user ? getUserResults(user.id) : [];
+  useEffect(() => {
+    // Chargement des résultats via le contrôleur si l'utilisateur est connecté
+    if (user) {
+      const results = diagnosticController.getUserResults(user.id);
+      setUserResults(results);
+    }
+  }, [user]);
   
   return (
     <Card>

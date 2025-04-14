@@ -1,33 +1,52 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useContentStore } from "@/store/contentStore";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Clock, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { contentController } from "@/controllers/contentController";
+import { InfoPage } from "@/models/content";
 
 const InformationPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { getInfoPageBySlug, infoPages } = useContentStore();
   const navigate = useNavigate();
-  
-  const page = getInfoPageBySlug(slug || "");
-  
-  // Find the index of the current page for navigation
-  const currentIndex = infoPages.findIndex(p => p.slug === slug);
-  const prevPage = currentIndex > 0 ? infoPages[currentIndex - 1] : null;
-  const nextPage = currentIndex < infoPages.length - 1 ? infoPages[currentIndex + 1] : null;
+  const [page, setPage] = useState<InfoPage | null>(null);
+  const [prevPage, setPrevPage] = useState<InfoPage | null>(null);
+  const [nextPage, setNextPage] = useState<InfoPage | null>(null);
   
   useEffect(() => {
-    if (!page) {
+    if (!slug) return;
+    
+    // Utilisation du contrôleur pour récupérer les données
+    const pageData = contentController.getInfoPageBySlug(slug);
+    if (!pageData) {
       navigate("/not-found");
+      return;
+    }
+    
+    setPage(pageData);
+    
+    // Récupération de toutes les pages pour la navigation précédente/suivante
+    const allPages = contentController.getInfoPages();
+    const currentIndex = allPages.findIndex(p => p.slug === slug);
+    
+    if (currentIndex > 0) {
+      setPrevPage(allPages[currentIndex - 1]);
+    } else {
+      setPrevPage(null);
+    }
+    
+    if (currentIndex < allPages.length - 1) {
+      setNextPage(allPages[currentIndex + 1]);
+    } else {
+      setNextPage(null);
     }
     
     window.scrollTo(0, 0);
-  }, [page, navigate, slug]);
+  }, [slug, navigate]);
   
   if (!page) return null;
   

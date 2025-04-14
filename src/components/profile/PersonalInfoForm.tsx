@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/store/authStore";
 import { useToast } from "@/components/ui/use-toast";
+import { authController } from "@/controllers/authController";
+import { ProfileUpdate } from "@/models/user";
 
 export const PersonalInfoForm = () => {
-  const { user, updateProfile } = useAuthStore();
+  const { user } = useAuthStore();
   const { toast } = useToast();
   
   const [name, setName] = useState(user?.name || "");
@@ -27,14 +29,28 @@ export const PersonalInfoForm = () => {
       return;
     }
     
+    if (!user?.id) {
+      toast({
+        title: "Erreur",
+        description: "Utilisateur non identifié.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsUpdatingProfile(true);
     
     try {
-      updateProfile({ name, email });
-      toast({
-        title: "Succès",
-        description: "Votre profil a été mis à jour avec succès.",
-      });
+      // Utilisation du contrôleur pour la logique métier
+      const profileData: ProfileUpdate = { name, email };
+      const { success } = await authController.updateProfile(user.id, profileData);
+      
+      if (success) {
+        toast({
+          title: "Succès",
+          description: "Votre profil a été mis à jour avec succès.",
+        });
+      }
     } catch (error) {
       toast({
         title: "Erreur",
