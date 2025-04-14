@@ -2,6 +2,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DiagnosticQuestion } from '../DiagnosticQuestion';
+import { StressQuestion } from '@/store/diagnosticStore';
 
 // Mock framer-motion to avoid animation issues in tests
 vi.mock('framer-motion', () => ({
@@ -11,10 +12,13 @@ vi.mock('framer-motion', () => ({
 }));
 
 describe('DiagnosticQuestion', () => {
-  const mockQuestion = {
-    id: 1,
+  const mockQuestion: StressQuestion = {
+    id: 'test-1',
     question: 'Do you feel stressed?',
     category: 'emotional',
+    points: [0, 1, 2, 3, 4],
+    order: 1,
+    isActive: true
   };
 
   it('renders the question text', () => {
