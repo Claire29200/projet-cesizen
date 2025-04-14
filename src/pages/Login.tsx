@@ -1,15 +1,15 @@
+
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,7 +19,6 @@ const Login = () => {
   const { login } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
   
   // Check if there is a redirect path in the location state
   const from = location.state?.from?.pathname || "/";
@@ -28,11 +27,7 @@ const Login = () => {
     e.preventDefault();
     
     if (!email || !password) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs.",
-        variant: "destructive",
-      });
+      toast.error("Veuillez remplir tous les champs.");
       return;
     }
     
@@ -45,11 +40,7 @@ const Login = () => {
         navigate(from, { replace: true });
       }
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la connexion.",
-        variant: "destructive",
-      });
+      toast.error("Une erreur est survenue lors de la connexion.");
     } finally {
       setIsLoading(false);
     }

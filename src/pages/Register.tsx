@@ -1,16 +1,16 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuthStore } from "@/store/authStore";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -24,35 +24,22 @@ const Register = () => {
   
   const { register } = useAuthStore();
   const navigate = useNavigate();
-  const { toast } = useToast();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name || !email || !password || !confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs.",
-        variant: "destructive",
-      });
+      toast.error("Veuillez remplir tous les champs.");
       return;
     }
     
     if (password !== confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas.",
-        variant: "destructive",
-      });
+      toast.error("Les mots de passe ne correspondent pas.");
       return;
     }
     
     if (!acceptTerms) {
-      toast({
-        title: "Erreur",
-        description: "Vous devez accepter les conditions d'utilisation.",
-        variant: "destructive",
-      });
+      toast.error("Vous devez accepter les conditions d'utilisation.");
       return;
     }
     
@@ -65,11 +52,7 @@ const Register = () => {
         navigate("/");
       }
     } catch (error) {
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'inscription.",
-        variant: "destructive",
-      });
+      toast.error("Une erreur est survenue lors de l'inscription.");
     } finally {
       setIsLoading(false);
     }
