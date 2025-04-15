@@ -11,7 +11,7 @@ export interface AuthState {
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
   resetPassword: (email: string) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
-  createDemoUsers: () => Promise<void>;
+  createDemoUsers: () => Promise<boolean>;
 }
 
 // Constantes pour les utilisateurs de démonstration
