@@ -36,5 +36,4 @@ const customRender = (
 export * from '@testing-library/react';
 
 // Override render method
-export { customRender as render, createMockInfoPage };
-
+export { customRender as render };

@@ -1,23 +1,23 @@
 
 import { InfoPage } from '@/models/content';
 import { createMockInfoPage } from '../test-utils';
+import { vi } from 'vitest';
 
 export const mockContentController = {
-  getInfoPages: jest.fn<InfoPage[], []>(() => []),
-  getUserInfoPages: jest.fn<InfoPage[], [string | undefined]>((userId) => 
+  getInfoPages: vi.fn<[], InfoPage[]>(() => []),
+  getUserInfoPages: vi.fn<[string | undefined], InfoPage[]>((userId) => 
     userId 
       ? [createMockInfoPage({ userId })] 
       : []
   ),
-  getPublicInfoPages: jest.fn<InfoPage[], []>(() => []),
-  getInfoPageBySlug: jest.fn<InfoPage | undefined, [string]>(() => undefined),
-  addInfoPage: jest.fn<InfoPage, [Omit<InfoPage, "id" | "createdAt" | "updatedAt">]>((page) => 
+  getPublicInfoPages: vi.fn<[], InfoPage[]>(() => []),
+  getInfoPageBySlug: vi.fn<[string], InfoPage | undefined>(() => undefined),
+  addInfoPage: vi.fn<[Omit<InfoPage, "id" | "createdAt" | "updatedAt">], InfoPage>((page) => 
     createMockInfoPage(page)
   ),
-  updateInfoPage: jest.fn<InfoPage, [string, Partial<InfoPage>]>((id, updates) => 
+  updateInfoPage: vi.fn<[string, Partial<InfoPage>], InfoPage>((id, updates) => 
     createMockInfoPage({ id, ...updates })
   ),
-  deleteInfoPage: jest.fn<boolean, [string]>(() => true),
-  isPageOwner: jest.fn<boolean, [string]>(() => false)
+  deleteInfoPage: vi.fn<[string], boolean>(() => true),
+  isPageOwner: vi.fn<[string], boolean>(() => false)
 };
-
