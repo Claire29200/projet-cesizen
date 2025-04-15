@@ -2,6 +2,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { useContentStore } from "@/store/contentStore";
 import { InfoPage, Section } from "@/models/content";
+import { useAuthStore } from "@/store/authStore";
 
 // Helper function to convert between store and model types
 const convertToModelInfoPage = (page: any): InfoPage => {
@@ -12,6 +13,24 @@ export const contentController = {
   // Récupération de toutes les pages d'information
   getInfoPages(): InfoPage[] {
     const pages = useContentStore.getState().infoPages;
+    return pages.map(convertToModelInfoPage);
+  },
+
+  // Récupération des pages d'information pour un utilisateur spécifique
+  getUserInfoPages(userId?: string): InfoPage[] {
+    if (!userId) return [];
+    
+    const pages = useContentStore.getState().infoPages.filter(
+      page => page.userId === userId
+    );
+    return pages.map(convertToModelInfoPage);
+  },
+
+  // Récupération des pages d'information publiques
+  getPublicInfoPages(): InfoPage[] {
+    const pages = useContentStore.getState().infoPages.filter(
+      page => page.isPublished && !page.userId
+    );
     return pages.map(convertToModelInfoPage);
   },
 
@@ -105,5 +124,14 @@ export const contentController = {
       });
       return false;
     }
+  },
+
+  // Vérification si l'utilisateur est propriétaire de la page
+  isPageOwner(pageId: string): boolean {
+    const currentUser = useAuthStore.getState().user;
+    if (!currentUser) return false;
+    
+    const page = useContentStore.getState().infoPages.find(page => page.id === pageId);
+    return page?.userId === currentUser.id;
   }
 };
