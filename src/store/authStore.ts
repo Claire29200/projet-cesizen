@@ -26,9 +26,9 @@ interface AuthState {
 }
 
 // Constantes pour les utilisateurs de démonstration
-const ADMIN_EMAIL = 'admin@mental.com';
+const ADMIN_EMAIL = 'brestoise6@gmail.com';
 const ADMIN_PASSWORD = 'admin123456';
-const USER_EMAIL = 'user@mental.com';
+const USER_EMAIL = 'claire.simonot@protonmail.com';
 const USER_PASSWORD = 'user123456';
 
 export const useAuthStore = create<AuthState>()(
