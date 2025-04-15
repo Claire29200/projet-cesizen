@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +20,7 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
     title: "",
     slug: "",
     isPublished: true,
-    sections: [{ title: "", content: "", id: "", updatedAt: new Date() }]
+    sections: [{ title: "", content: "", id: "", updatedAt: new Date() as Date | string }]
   });
   
   useEffect(() => {
@@ -74,7 +75,7 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
     updatedSections[index] = {
       ...updatedSections[index],
       [field]: value,
-      updatedAt: new Date()
+      updatedAt: new Date() as Date | string
     };
     
     setFormData({
@@ -90,7 +91,7 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
         title: "", 
         content: "",
         id: Math.random().toString(36).substr(2, 9),
-        updatedAt: new Date()
+        updatedAt: new Date() as Date | string
       }]
     });
   };
@@ -114,7 +115,7 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
       sections: formData.sections.map(section => ({
         ...section,
         id: section.id || Math.random().toString(36).substr(2, 9),
-        updatedAt: section.updatedAt || new Date()
+        updatedAt: section.updatedAt || new Date() as Date | string
       }))
     };
     onSubmit(preparedData);

@@ -14,5 +14,5 @@ export interface InfoPage {
   isPublished: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
-  userId?: string; // ID de l'utilisateur qui a créé la ressource
+  userId?: string; // Add userId property
 }
