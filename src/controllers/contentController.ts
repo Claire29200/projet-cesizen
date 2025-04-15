@@ -1,7 +1,9 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { InfoPage, Section } from "@/models/content";
 import { v4 as uuidv4 } from "uuid";
 import { useAuthStore } from "@/store/auth";
+import { toast } from "@/components/ui/use-toast";
 
 const convertDbToModelSection = (section: any): Section => {
   return {
