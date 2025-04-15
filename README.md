@@ -1,4 +1,4 @@
-# Guide d'Installation du Projet CESIZen - Prenez soin de votre santé mentale au quotidien.
+# Guide d'Installation du Projet CESIZen - Prenez soin de votre santé mentale au quotidien
 
 ## Prérequis
 
@@ -10,9 +10,9 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
 
 ## Étape 1 : Clonage du Repository
 
-```bash
-git clone https://github.com/votre-organisation/serenity-guidance-tool.git
-cd serenity-guidance-tool
+```bash[
+git clone https://github.com/Claire29200/projet-cesizen.git
+cd projet-cesizen
 ```
 
 ## Étape 2 : Installation des Dépendances
