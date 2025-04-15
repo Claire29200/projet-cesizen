@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { User, Lock, History } from "lucide-react";
+import { User, Lock, History, FileText } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ReactNode } from "react";
 
@@ -27,6 +27,10 @@ export const ProfileHeader = ({ defaultTab, children }: ProfileHeaderProps) => {
           <TabsTrigger value="security" className="flex items-center gap-2">
             <Lock className="h-4 w-4" />
             Sécurité
+          </TabsTrigger>
+          <TabsTrigger value="resources" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Mes ressources
           </TabsTrigger>
           <TabsTrigger value="diagnostics" className="flex items-center gap-2">
             <History className="h-4 w-4" />
