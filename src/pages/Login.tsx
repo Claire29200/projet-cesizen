@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Check if there is a redirect path in the location state
   const from = location.state?.from?.pathname || "/";
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -141,8 +139,8 @@ const Login = () => {
             <div className="mt-8 pt-6 border-t border-mental-100">
               <p className="text-xs text-center text-mental-500">
                 <span className="block mb-2">Pour les besoins de démonstration :</span>
-                <span className="font-medium">Admin :</span> admin@santementale.com / admin123<br />
-                <span className="font-medium">Utilisateur :</span> user@santementale.com / user123
+                <span className="font-medium">Admin :</span> brestoise6@gmail.com / admin123456<br />
+                <span className="font-medium">Utilisateur :</span> brestoise6@gmail.com / user123456
               </p>
             </div>
           </motion.div>
