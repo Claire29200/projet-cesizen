@@ -4,20 +4,20 @@ import { createMockInfoPage } from '../test-utils';
 import { vi } from 'vitest';
 
 export const mockContentController = {
-  getInfoPages: vi.fn<[], InfoPage[]>(() => []),
-  getUserInfoPages: vi.fn<[string | undefined], InfoPage[]>((userId) => 
+  getInfoPages: vi.fn().mockReturnValue([]),
+  getUserInfoPages: vi.fn((userId?: string) => 
     userId 
       ? [createMockInfoPage({ userId })] 
       : []
   ),
-  getPublicInfoPages: vi.fn<[], InfoPage[]>(() => []),
-  getInfoPageBySlug: vi.fn<[string], InfoPage | undefined>(() => undefined),
-  addInfoPage: vi.fn<[Omit<InfoPage, "id" | "createdAt" | "updatedAt">], InfoPage>((page) => 
+  getPublicInfoPages: vi.fn().mockReturnValue([]),
+  getInfoPageBySlug: vi.fn().mockReturnValue(undefined),
+  addInfoPage: vi.fn((page: Omit<InfoPage, "id" | "createdAt" | "updatedAt">) => 
     createMockInfoPage(page)
   ),
-  updateInfoPage: vi.fn<[string, Partial<InfoPage>], InfoPage>((id, updates) => 
+  updateInfoPage: vi.fn((id: string, updates: Partial<InfoPage>) => 
     createMockInfoPage({ id, ...updates })
   ),
-  deleteInfoPage: vi.fn<[string], boolean>(() => true),
-  isPageOwner: vi.fn<[string], boolean>(() => false)
+  deleteInfoPage: vi.fn().mockReturnValue(true),
+  isPageOwner: vi.fn().mockReturnValue(false)
 };
