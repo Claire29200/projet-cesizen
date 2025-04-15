@@ -1,3 +1,4 @@
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '@/integrations/supabase/client';
@@ -34,8 +35,8 @@ export const useAuthStore = create<AuthState>()(
       login: async (email, password) => {
         try {
           // Vérifier s'il s'agit d'un utilisateur de démonstration
-          const isDemo = (email === 'admin@example.com' && password === 'admin123') ||
-                         (email === 'user@example.com' && password === 'user123');
+          const isDemo = (email === 'admin@santementale.com' && password === 'admin123') ||
+                         (email === 'user@santementale.com' && password === 'user123');
           
           // Si c'est un utilisateur de démo, essayer de le créer s'il n'existe pas
           if (isDemo) {
@@ -71,7 +72,7 @@ export const useAuthStore = create<AuthState>()(
             console.error('Error fetching profile:', profileError);
           }
           
-          const isAdminUser = email === 'admin@example.com';
+          const isAdminUser = email === 'admin@santementale.com';
           
           set({
             user: {
@@ -98,7 +99,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           // Vérifier si l'utilisateur admin existe déjà
           const { data: adminData, error: adminCheckError } = await supabase.auth.signInWithPassword({
-            email: 'admin@example.com',
+            email: 'admin@santementale.com',
             password: 'admin123',
           });
           
@@ -106,7 +107,7 @@ export const useAuthStore = create<AuthState>()(
           if (adminCheckError && adminCheckError.message.includes('Invalid login credentials')) {
             console.log('Création de l\'utilisateur admin de démonstration...');
             const { error: adminCreateError } = await supabase.auth.signUp({
-              email: 'admin@example.com',
+              email: 'admin@santementale.com',
               password: 'admin123',
               options: {
                 data: {
@@ -118,12 +119,30 @@ export const useAuthStore = create<AuthState>()(
             
             if (adminCreateError) {
               console.error('Erreur lors de la création de l\'utilisateur admin:', adminCreateError);
+            } else {
+              // Création du profil dans la table profiles après inscription
+              const { data: userData } = await supabase.auth.getUser();
+              if (userData && userData.user) {
+                const { error: profileError } = await supabase
+                  .from('profiles')
+                  .insert([
+                    {
+                      id: userData.user.id,
+                      email: 'admin@santementale.com',
+                      name: 'Administrateur',
+                    }
+                  ]);
+                
+                if (profileError) {
+                  console.error('Erreur lors de la création du profil admin:', profileError);
+                }
+              }
             }
           }
           
           // Vérifier si l'utilisateur standard existe déjà
           const { data: userData, error: userCheckError } = await supabase.auth.signInWithPassword({
-            email: 'user@example.com',
+            email: 'user@santementale.com',
             password: 'user123',
           });
           
@@ -131,7 +150,7 @@ export const useAuthStore = create<AuthState>()(
           if (userCheckError && userCheckError.message.includes('Invalid login credentials')) {
             console.log('Création de l\'utilisateur standard de démonstration...');
             const { error: userCreateError } = await supabase.auth.signUp({
-              email: 'user@example.com',
+              email: 'user@santementale.com',
               password: 'user123',
               options: {
                 data: {
@@ -143,6 +162,24 @@ export const useAuthStore = create<AuthState>()(
             
             if (userCreateError) {
               console.error('Erreur lors de la création de l\'utilisateur standard:', userCreateError);
+            } else {
+              // Création du profil dans la table profiles après inscription
+              const { data: userData } = await supabase.auth.getUser();
+              if (userData && userData.user) {
+                const { error: profileError } = await supabase
+                  .from('profiles')
+                  .insert([
+                    {
+                      id: userData.user.id,
+                      email: 'user@santementale.com',
+                      name: 'Utilisateur',
+                    }
+                  ]);
+                
+                if (profileError) {
+                  console.error('Erreur lors de la création du profil utilisateur:', profileError);
+                }
+              }
             }
           }
         } catch (error) {
