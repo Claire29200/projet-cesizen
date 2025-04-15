@@ -9,6 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      content_sections: {
+        Row: {
+          content: string
+          id: string
+          page_id: string
+          position: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          id?: string
+          page_id: string
+          position?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          id?: string
+          page_id?: string
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_sections_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "info_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      info_pages: {
+        Row: {
+          created_at: string
+          id: string
+          is_published: boolean
+          slug: string
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          slug: string
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          slug?: string
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null

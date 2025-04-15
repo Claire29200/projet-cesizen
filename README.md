@@ -1,62 +1,67 @@
-# Guide d'Installation du Projet CESIZen - Prenez soin de votre santé mentale au quotidien
 
-## Prérequis
+# CESIZen - Prenez soin de votre santé mentale au quotidien
 
-Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
+## À propos du projet
 
-- Node.js (version 18 ou supérieure)
-- npm (version 9 ou supérieure)
-- Un compte Supabase (pour l'authentification et la base de données)
+CESIZen est une application web conçue pour aider les utilisateurs à prendre soin de leur santé mentale au quotidien. L'application permet de réaliser des diagnostics de stress, d'accéder à des ressources informatives et de suivre son évolution dans le temps.
 
-## Étape 1 : Clonage du Repository
+## Fonctionnalités principales
 
-```bash[
-git clone https://github.com/Claire29200/projet-cesizen.git
-cd projet-cesizen
-```
+- Évaluation du niveau de stress via un questionnaire interactif
+- Authentification utilisateur (inscription, connexion, déconnexion)
+- Gestion de profil utilisateur
+- Consultation de ressources informatives sur la santé mentale
+- Création et gestion de ressources personnelles
+- Interface d'administration pour les utilisateurs avec des droits spécifiques
 
-## Étape 2 : Installation des Dépendances
+## Guide d'installation
 
-```bash
-npm install
-```
+Consultez le fichier [INSTALLATION.md](./INSTALLATION.md) pour les instructions détaillées d'installation et de configuration.
 
-## Étape 3 : Configuration de Supabase
+## Cahier de tests
 
-1. Créez un nouveau projet sur [Supabase](https://supabase.com/)
-2. Récupérez votre URL de projet et votre clé publique
-3. Mettez à jour le fichier `src/integrations/supabase/client.ts` avec vos identifiants
+L'application dispose d'une suite de tests unitaires et d'intégration pour garantir sa qualité. Les tests couvrent notamment :
 
-```typescript
-const SUPABASE_URL = "votre-url-supabase"
-const SUPABASE_PUBLISHABLE_KEY = "votre-clé-publique"
-```
+1. **Authentification**
+   - Connexion utilisateur
+   - Déconnexion utilisateur
+   - Validation des formulaires
 
-## Étape 4 : Configuration des Migrations de Base de Données
+2. **Diagnostic de stress**
+   - Réponse aux questions
+   - Calcul de score
+   - Affichage des résultats
+   - Sauvegarde des résultats
 
-```bash
-# Si vous utilisez l'interface Supabase
-# Exécutez les migrations depuis le tableau de bord Supabase
+3. **Interface utilisateur**
+   - Affichage conditionnel des éléments en fonction du statut d'authentification
+   - Navigation entre les pages
+   - Réactivité des composants
 
-# Ou manuellement
-npm run supabase:migrations
-```
+## Structure du projet
 
-## Étape 5 : Démarrage du Serveur de Développement
+L'application suit une architecture MVC adaptée au frontend :
 
-```bash
-npm run dev
-```
+- **Models** : Définition des types et interfaces dans `/src/models`
+- **Views** : Composants React dans `/src/components` et pages dans `/src/pages`
+- **Controllers** : Logique métier dans `/src/controllers`
 
-Votre application sera accessible à l'adresse : `http://localhost:8080`
+## Comptes de démonstration
 
-## Étape 6 : Compilation pour la Production
+Pour tester l'application rapidement, vous pouvez utiliser les comptes de démonstration :
 
-```bash
-npm run build
-```
+- **Admin** : admin@example.com / admin123
+- **Utilisateur** : user@example.com / user123
 
-## Résolution des Problèmes
+## Technologies utilisées
 
-- Assurez-vous que toutes les variables d'environnement sont correctement configurées
-- Vérifiez que vous avez la dernière version des dépendances
+- React
+- TypeScript
+- Tailwind CSS
+- Supabase (authentification et stockage de données)
+- Vitest (tests)
+- Framer Motion (animations)
+
+## Licence
+
+Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.

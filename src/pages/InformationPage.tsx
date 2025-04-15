@@ -16,37 +16,65 @@ const InformationPage = () => {
   const [page, setPage] = useState<InfoPage | null>(null);
   const [prevPage, setPrevPage] = useState<InfoPage | null>(null);
   const [nextPage, setNextPage] = useState<InfoPage | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   
   useEffect(() => {
-    if (!slug) return;
+    const fetchPage = async () => {
+      if (!slug) return;
+      
+      setLoading(true);
+      try {
+        // Utilisation du contrôleur pour récupérer les données
+        const pageData = await contentController.getInfoPageBySlug(slug);
+        if (!pageData) {
+          navigate("/not-found");
+          return;
+        }
+        
+        setPage(pageData);
+        
+        // Récupération de toutes les pages pour la navigation précédente/suivante
+        const allPages = await contentController.getInfoPages();
+        const currentIndex = allPages.findIndex(p => p.slug === slug);
+        
+        if (currentIndex > 0) {
+          setPrevPage(allPages[currentIndex - 1]);
+        } else {
+          setPrevPage(null);
+        }
+        
+        if (currentIndex < allPages.length - 1) {
+          setNextPage(allPages[currentIndex + 1]);
+        } else {
+          setNextPage(null);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération de la page:", error);
+        navigate("/not-found");
+      } finally {
+        setLoading(false);
+      }
+      
+      window.scrollTo(0, 0);
+    };
     
-    // Utilisation du contrôleur pour récupérer les données
-    const pageData = contentController.getInfoPageBySlug(slug);
-    if (!pageData) {
-      navigate("/not-found");
-      return;
-    }
-    
-    setPage(pageData);
-    
-    // Récupération de toutes les pages pour la navigation précédente/suivante
-    const allPages = contentController.getInfoPages();
-    const currentIndex = allPages.findIndex(p => p.slug === slug);
-    
-    if (currentIndex > 0) {
-      setPrevPage(allPages[currentIndex - 1]);
-    } else {
-      setPrevPage(null);
-    }
-    
-    if (currentIndex < allPages.length - 1) {
-      setNextPage(allPages[currentIndex + 1]);
-    } else {
-      setNextPage(null);
-    }
-    
-    window.scrollTo(0, 0);
+    fetchPage();
   }, [slug, navigate]);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow pt-24 pb-16 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mental-600 mx-auto"></div>
+            <p className="text-mental-600 mt-4">Chargement de la page...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   
   if (!page) return null;
   

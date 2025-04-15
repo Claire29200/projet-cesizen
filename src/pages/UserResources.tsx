@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -40,15 +41,30 @@ const UserResources = () => {
   const { user } = useAuthStore();
   const { toast } = useToast();
   const [resources, setResources] = useState<InfoPage[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedResource, setSelectedResource] = useState<InfoPage | null>(null);
   
-  const fetchUserResources = () => {
+  const fetchUserResources = async () => {
+    setLoading(true);
     if (user?.id) {
-      const userResources = contentController.getUserInfoPages(user.id);
-      setResources(userResources);
+      try {
+        const userResources = await contentController.getUserInfoPages(user.id);
+        setResources(userResources);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des ressources:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de récupérer vos ressources.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
     }
   };
   
@@ -56,7 +72,7 @@ const UserResources = () => {
     fetchUserResources();
   }, [user]);
   
-  const handleAddResource = (resourceData: {
+  const handleAddResource = async (resourceData: {
     title: string;
     slug: string;
     isPublished: boolean;
@@ -72,7 +88,7 @@ const UserResources = () => {
     }
     
     try {
-      contentController.addInfoPage({
+      await contentController.addInfoPage({
         ...resourceData,
         userId: user.id,
       });
@@ -93,11 +109,11 @@ const UserResources = () => {
     }
   };
   
-  const handleUpdateResource = (resourceData: InfoPage) => {
+  const handleUpdateResource = async (resourceData: InfoPage) => {
     if (!selectedResource) return;
     
     try {
-      contentController.updateInfoPage(selectedResource.id, resourceData);
+      await contentController.updateInfoPage(selectedResource.id, resourceData);
       
       setIsEditDialogOpen(false);
       setSelectedResource(null);
@@ -116,11 +132,11 @@ const UserResources = () => {
     }
   };
   
-  const handleDeleteResource = () => {
+  const handleDeleteResource = async () => {
     if (!selectedResource) return;
     
     try {
-      contentController.deleteInfoPage(selectedResource.id);
+      await contentController.deleteInfoPage(selectedResource.id);
       
       setIsDeleteDialogOpen(false);
       setSelectedResource(null);
@@ -183,7 +199,12 @@ const UserResources = () => {
               </Button>
             </div>
             
-            {resources.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mental-600 mx-auto"></div>
+                <p className="text-mental-600 mt-4">Chargement de vos ressources...</p>
+              </div>
+            ) : resources.length === 0 ? (
               <Card className="text-center py-12">
                 <CardContent>
                   <div className="flex justify-center mb-4">
