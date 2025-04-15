@@ -15,7 +15,7 @@ export interface AuthState {
 }
 
 // Constantes pour les utilisateurs de démonstration
-export const ADMIN_EMAIL = 'brestoise6@gmail.com';
-export const ADMIN_PASSWORD = 'admin123456';
-export const USER_EMAIL = 'claire.simonot@protonmail.com';
-export const USER_PASSWORD = 'user123456';
+export const ADMIN_EMAIL = 'claire.simonot@protonmail.com';
+export const ADMIN_PASSWORD = 'user123456';
+export const USER_EMAIL = 'brestoise6@gmail.com';
+export const USER_PASSWORD = 'admin123456';
