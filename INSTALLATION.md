@@ -60,3 +60,14 @@ npm run build
 
 - Assurez-vous que toutes les variables d'environnement sont correctement configurées
 - Vérifiez que vous avez la dernière version des dépendances
+- Consultez la documentation de [Lovable](https://docs.lovable.dev) en cas de problème
+
+## Support
+
+En cas de difficultés, n'hésitez pas à nous contacter via :
+- Email : support@serenityapp.com
+- Discord : [Lien du serveur Discord](https://discord.gg/votre-serveur)
+
+## Contributions
+
+Les contributions sont les bienvenues ! Veuillez consulter notre guide de contribution avant de soumettre une pull request.
