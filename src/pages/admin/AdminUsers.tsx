@@ -32,7 +32,7 @@ const mockUsers = [
   {
     id: '1',
     name: 'Admin',
-    email: 'admin@example.com',
+    email: 'brestoise6@gmail.com',
     isAdmin: true,
     isActive: true,
     dateCreated: '2023-01-01T00:00:00Z',
