@@ -12,7 +12,7 @@ export const createDemoUsers = async () => {
       password: ADMIN_PASSWORD,
     });
     
-    if (adminCheckError && adminCheckError.message.includes('Invalid login credentials')) {
+    if (adminCheckError) {
       console.log('Création de l\'utilisateur admin de démonstration...');
       const { error: adminCreateError } = await supabase.auth.signUp({
         email: ADMIN_EMAIL,
@@ -28,23 +28,27 @@ export const createDemoUsers = async () => {
       if (adminCreateError) {
         console.error('Erreur lors de la création de l\'utilisateur admin:', adminCreateError);
       } else {
-        const { data: userData } = await supabase.auth.getUser();
-        if (userData && userData.user) {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert([
-              {
-                id: userData.user.id,
-                email: ADMIN_EMAIL,
-                name: 'Administrateur',
-              }
-            ]);
-          
-          if (profileError) {
-            console.error('Erreur lors de la création du profil admin:', profileError);
-          }
+        console.log('Utilisateur admin créé avec succès');
+        
+        // Attendre un peu pour que la création soit complète
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .upsert([
+            {
+              id: (await supabase.auth.getUser()).data.user?.id,
+              email: ADMIN_EMAIL,
+              name: 'Administrateur',
+            }
+          ], { onConflict: 'id' });
+        
+        if (profileError) {
+          console.error('Erreur lors de la création du profil admin:', profileError);
         }
       }
+    } else {
+      console.log('Utilisateur admin existe déjà');
     }
     
     // Vérifier et créer l'utilisateur standard
@@ -53,7 +57,7 @@ export const createDemoUsers = async () => {
       password: USER_PASSWORD,
     });
     
-    if (userCheckError && userCheckError.message.includes('Invalid login credentials')) {
+    if (userCheckError) {
       console.log('Création de l\'utilisateur standard de démonstration...');
       const { error: userCreateError } = await supabase.auth.signUp({
         email: USER_EMAIL,
@@ -69,23 +73,27 @@ export const createDemoUsers = async () => {
       if (userCreateError) {
         console.error('Erreur lors de la création de l\'utilisateur standard:', userCreateError);
       } else {
-        const { data: userData } = await supabase.auth.getUser();
-        if (userData && userData.user) {
-          const { error: profileError } = await supabase
-            .from('profiles')
-            .insert([
-              {
-                id: userData.user.id,
-                email: USER_EMAIL,
-                name: 'Utilisateur',
-              }
-            ]);
-          
-          if (profileError) {
-            console.error('Erreur lors de la création du profil utilisateur:', profileError);
-          }
+        console.log('Utilisateur standard créé avec succès');
+        
+        // Attendre un peu pour que la création soit complète
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .upsert([
+            {
+              id: (await supabase.auth.getUser()).data.user?.id,
+              email: USER_EMAIL,
+              name: 'Utilisateur',
+            }
+          ], { onConflict: 'id' });
+        
+        if (profileError) {
+          console.error('Erreur lors de la création du profil utilisateur:', profileError);
         }
       }
+    } else {
+      console.log('Utilisateur standard existe déjà');
     }
     
     console.log('Configuration des utilisateurs de démonstration terminée');

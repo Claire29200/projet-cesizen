@@ -7,6 +7,7 @@ import { User } from '@/models/user';
 
 export const login = async (email: string, password: string, set: any) => {
   try {
+    // Tentative de création des utilisateurs de démonstration si nécessaire
     const isAdminDemo = (email === ADMIN_EMAIL && password === ADMIN_PASSWORD);
     
     if (isAdminDemo) {
@@ -17,6 +18,7 @@ export const login = async (email: string, password: string, set: any) => {
       }
     }
     
+    // Tentative de connexion
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -30,6 +32,7 @@ export const login = async (email: string, password: string, set: any) => {
       return false;
     }
     
+    // Récupération du profil utilisateur
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('*')
@@ -37,11 +40,13 @@ export const login = async (email: string, password: string, set: any) => {
       .single();
     
     if (profileError) {
-      console.error('Error fetching profile:', profileError);
+      console.error('Erreur lors de la récupération du profil:', profileError);
     }
     
-    const isAdminUser = email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
+    // Détermine si l'utilisateur est administrateur
+    const isAdminUser = email === ADMIN_EMAIL;
     
+    // Mise à jour du store avec les informations utilisateur
     set({
       user: {
         id: data.user?.id ?? '',
