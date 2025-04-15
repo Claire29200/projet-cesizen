@@ -7,7 +7,7 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/store/auth";
 import { useContentStore } from "@/store/contentStore";
-import { useDiagnosticStore } from "@/store/diagnosticStore";
+import { useDiagnosticStore } from "@/store/diagnostic";
 import { motion } from "framer-motion";
 import { Users, FileText, Activity, BarChart3 } from "lucide-react";
 
