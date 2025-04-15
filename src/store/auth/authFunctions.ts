@@ -1,7 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from './types';
+import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL } from './types';
 import { createDemoUsers } from './demoUsers';
 import { User } from '@/models/user';
 
@@ -44,7 +44,7 @@ export const login = async (email: string, password: string, set: any) => {
     }
     
     // Détermine si l'utilisateur est administrateur
-    const isAdminUser = email === ADMIN_EMAIL;
+    const isAdminUser = data.user?.user_metadata?.isAdmin === true || email === ADMIN_EMAIL;
     
     // Mise à jour du store avec les informations utilisateur
     set({
