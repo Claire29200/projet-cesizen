@@ -72,7 +72,7 @@ export const useAuthStore = create<AuthState>()(
             console.error('Error fetching profile:', profileError);
           }
           
-          const isAdminUser = email === 'admin@example.com';
+          const isAdminUser = email === 'brestoise6@gmail.com';
           
           set({
             user: {
@@ -99,16 +99,16 @@ export const useAuthStore = create<AuthState>()(
         try {
           // Vérifier si l'utilisateur admin existe déjà
           const { data: adminData, error: adminCheckError } = await supabase.auth.signInWithPassword({
-            email: 'admin@example.com',
-            password: 'admin123',
+            email: 'brestoise6@gmail.com',
+            password: 'admin123456',
           });
           
           // Si pas d'utilisateur admin, le créer
           if (adminCheckError && adminCheckError.message.includes('Invalid login credentials')) {
             console.log('Création de l\'utilisateur admin de démonstration...');
             const { error: adminCreateError } = await supabase.auth.signUp({
-              email: 'admin@example.com',
-              password: 'admin123',
+              email: 'brestoise6@gmail.com',
+              password: 'admin123456',
               options: {
                 data: {
                   name: 'Administrateur',
