@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -18,6 +17,7 @@ export interface InfoPage {
   isPublished: boolean;
   createdAt: string | Date;
   updatedAt: string | Date;
+  userId?: string; // Add userId property to match the model
 }
 
 interface ContentState {
