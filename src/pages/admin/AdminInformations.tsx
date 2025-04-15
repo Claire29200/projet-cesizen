@@ -1,32 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useContentStore, InfoPage, ContentSection } from "@/store/contentStore";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
+import { InfoPage } from "@/models/content";
+import { contentController } from "@/controllers/contentController";
 import {
   InfoPageList,
   AddPageDialog,
   DeletePageDialog,
-  EditPageForm
+  EditPageForm,
+  MigrateContentButton
 } from "@/components/admin/info-pages";
 
 const AdminInformations = () => {
-  const { infoPages, addInfoPage, updateInfoPage, removeInfoPage } = useContentStore();
+  const [infoPages, setInfoPages] = useState<InfoPage[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [isAddPageDialogOpen, setIsAddPageDialogOpen] = useState(false);
   const [isDeletePageDialogOpen, setIsDeletePageDialogOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedPage, setSelectedPage] = useState<InfoPage | null>(null);
   const { toast } = useToast();
+
+  const fetchInfoPages = async () => {
+    setLoading(true);
+    try {
+      const pages = await contentController.getInfoPages();
+      setInfoPages(pages);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des pages:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de récupérer les pages d'information",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInfoPages();
+  }, []);
   
-  const handleAddPage = (pageData: {
+  const handleAddPage = async (pageData: {
     title: string;
     slug: string;
     isPublished: boolean;
-    sections: Omit<ContentSection, "id" | "updatedAt">[];
+    sections: {
+      title: string;
+      content: string;
+    }[];
   }) => {
     if (!pageData.title || !pageData.slug) {
       toast({
@@ -50,25 +77,33 @@ const AdminInformations = () => {
       return;
     }
     
-    const sectionsWithIds = pageData.sections.map((section) => ({
-      ...section,
-      id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
-      updatedAt: new Date().toISOString(),
-    })) as ContentSection[];
-    
-    addInfoPage({
-      title: pageData.title,
-      slug: pageData.slug,
-      isPublished: pageData.isPublished,
-      sections: sectionsWithIds,
-    });
-    
-    setIsAddPageDialogOpen(false);
-    
-    toast({
-      title: "Succès",
-      description: "La page d'information a été créée avec succès.",
-    });
+    try {
+      await contentController.addInfoPage({
+        title: pageData.title,
+        slug: pageData.slug,
+        isPublished: pageData.isPublished,
+        sections: pageData.sections.map(section => ({
+          ...section,
+          id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+          updatedAt: new Date().toISOString()
+        })),
+      });
+      
+      setIsAddPageDialogOpen(false);
+      fetchInfoPages();
+      
+      toast({
+        title: "Succès",
+        description: "La page d'information a été créée avec succès.",
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création de la page:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer la page d'information",
+        variant: "destructive",
+      });
+    }
   };
   
   const handleEditPage = (page: InfoPage) => {
@@ -116,7 +151,7 @@ const AdminInformations = () => {
     });
   };
   
-  const handleUpdatePage = () => {
+  const handleUpdatePage = async () => {
     if (!selectedPage) return;
     
     if (!selectedPage.title || !selectedPage.slug) {
@@ -141,31 +176,52 @@ const AdminInformations = () => {
       return;
     }
     
-    updateInfoPage({
-      ...selectedPage,
-      updatedAt: new Date().toISOString(),
-    });
-    
-    setIsEditMode(false);
-    setSelectedPage(null);
-    
-    toast({
-      title: "Succès",
-      description: "La page d'information a été mise à jour avec succès.",
-    });
+    try {
+      await contentController.updateInfoPage(selectedPage.id, {
+        ...selectedPage,
+        updatedAt: new Date().toISOString(),
+      });
+      
+      setIsEditMode(false);
+      setSelectedPage(null);
+      fetchInfoPages();
+      
+      toast({
+        title: "Succès",
+        description: "La page d'information a été mise à jour avec succès.",
+      });
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la page:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour la page d'information",
+        variant: "destructive",
+      });
+    }
   };
   
-  const handleDeletePage = () => {
+  const handleDeletePage = async () => {
     if (!selectedPage) return;
     
-    removeInfoPage(selectedPage.id);
-    setIsDeletePageDialogOpen(false);
-    setSelectedPage(null);
-    
-    toast({
-      title: "Succès",
-      description: "La page d'information a été supprimée avec succès.",
-    });
+    try {
+      await contentController.deleteInfoPage(selectedPage.id);
+      
+      setIsDeletePageDialogOpen(false);
+      setSelectedPage(null);
+      fetchInfoPages();
+      
+      toast({
+        title: "Succès",
+        description: "La page d'information a été supprimée avec succès.",
+      });
+    } catch (error) {
+      console.error("Erreur lors de la suppression de la page:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer la page d'information",
+        variant: "destructive",
+      });
+    }
   };
   
   return (
@@ -178,7 +234,12 @@ const AdminInformations = () => {
             <AdminSidebar />
             
             <div className="flex-1">
-              {!isEditMode ? (
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mental-600 mx-auto"></div>
+                  <p className="text-mental-600 mt-4">Chargement des pages d'information...</p>
+                </div>
+              ) : !isEditMode ? (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -193,13 +254,15 @@ const AdminInformations = () => {
                         Gérez les pages d'informations de la plateforme
                       </p>
                     </div>
-                    <Button
-                      className="mt-4 sm:mt-0"
-                      onClick={() => setIsAddPageDialogOpen(true)}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Ajouter une page
-                    </Button>
+                    <div className="flex gap-2 mt-4 sm:mt-0">
+                      <MigrateContentButton />
+                      <Button
+                        onClick={() => setIsAddPageDialogOpen(true)}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Ajouter une page
+                      </Button>
+                    </div>
                   </div>
                   
                   <InfoPageList 
