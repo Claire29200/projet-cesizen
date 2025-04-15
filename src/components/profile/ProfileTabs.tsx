@@ -4,7 +4,7 @@ import { PersonalInfoForm } from "@/components/profile/PersonalInfoForm";
 import { AccountActions } from "@/components/profile/AccountActions";
 import { PasswordChangeForm } from "@/components/profile/PasswordChangeForm";
 import { DiagnosticHistory } from "@/components/profile/DiagnosticHistory";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";

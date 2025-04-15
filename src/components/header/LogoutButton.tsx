@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 
 export function LogoutButton() {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);

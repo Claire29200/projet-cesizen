@@ -1,7 +1,7 @@
 
 import { ReactNode, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ProtectedRouteProps {
