@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDiagnosticStore } from "@/store/diagnosticStore";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { DiagnosticQuestion } from "@/components/diagnostic/DiagnosticQuestion";
 import { DiagnosticResultView } from "@/components/diagnostic/DiagnosticResult";

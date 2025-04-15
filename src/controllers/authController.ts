@@ -1,7 +1,6 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 
 // Logique métier d'authentification séparée des composants UI
 export const authController = {

@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 
 export const AccountActions = () => {
   const { logout } = useAuthStore();

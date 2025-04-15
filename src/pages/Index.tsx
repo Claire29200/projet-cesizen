@@ -8,7 +8,7 @@ import { Footer } from "@/components/Footer";
 import { ChevronRight, Info, HeartPulse, Brain, Phone, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Separator } from "@/components/ui/separator";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import { useContentStore } from "@/store/contentStore";
 
 const Index = () => {

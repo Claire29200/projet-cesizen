@@ -1,12 +1,11 @@
-
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '../../../test/test-utils';
 import { AuthButtons } from '../AuthButtons';
-import { useAuthStore } from '@/store/authStore';
+import { useAuthStore } from '@/store/auth';
 import { act } from 'react-dom/test-utils';
 
 // Mock the entire authStore
-vi.mock('@/store/authStore', () => ({
+vi.mock('@/store/auth', () => ({
   useAuthStore: {
     getState: vi.fn(),
     subscribe: vi.fn(),

@@ -1,12 +1,11 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@/test/test-utils';
 import Login from '@/pages/Login';
-import { useAuthStore } from '@/store/authStore';
+import { useAuthStore } from '@/store/auth';
 import { toast } from 'sonner';
 
 // Mock de authStore
-vi.mock('@/store/authStore', () => ({
+vi.mock('@/store/auth', () => ({
   useAuthStore: {
     getState: vi.fn().mockReturnValue({
       login: vi.fn()
