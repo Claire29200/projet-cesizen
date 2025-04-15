@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { InfoPage } from "@/models/content";
+import { InfoPage, Section } from "@/models/content";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -20,7 +19,7 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
     title: "",
     slug: "",
     isPublished: true,
-    sections: [{ title: "", content: "" }]
+    sections: [{ title: "", content: "", id: "", updatedAt: new Date() }]
   });
   
   useEffect(() => {
@@ -74,7 +73,8 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
     const updatedSections = [...formData.sections];
     updatedSections[index] = {
       ...updatedSections[index],
-      [field]: value
+      [field]: value,
+      updatedAt: new Date()
     };
     
     setFormData({
@@ -86,7 +86,12 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
   const handleAddSection = () => {
     setFormData({
       ...formData,
-      sections: [...formData.sections, { title: "", content: "" }]
+      sections: [...formData.sections, { 
+        title: "", 
+        content: "",
+        id: Math.random().toString(36).substr(2, 9),
+        updatedAt: new Date()
+      }]
     });
   };
   
@@ -104,7 +109,15 @@ export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    const preparedData = {
+      ...formData,
+      sections: formData.sections.map(section => ({
+        ...section,
+        id: section.id || Math.random().toString(36).substr(2, 9),
+        updatedAt: section.updatedAt || new Date()
+      }))
+    };
+    onSubmit(preparedData);
   };
   
   return (

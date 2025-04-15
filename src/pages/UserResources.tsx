@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { Plus, FileText, Edit, Trash2 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { contentController } from "@/controllers/contentController";
-import { InfoPage } from "@/models/content";
+import { InfoPage, Section } from "@/models/content";
 import { 
   Card, 
   CardContent, 
@@ -66,7 +66,7 @@ const UserResources = () => {
     title: string;
     slug: string;
     isPublished: boolean;
-    sections: { title: string; content: string }[];
+    sections: Section[];
   }) => {
     if (!user) {
       toast({

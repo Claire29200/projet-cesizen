@@ -11,6 +11,7 @@ import DiagnosticPage from "./pages/DiagnosticPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import UserResources from "./pages/UserResources";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminInformations from "./pages/admin/AdminInformations";
@@ -42,6 +43,11 @@ const App = () => (
           <Route path="/profil" element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/mes-ressources" element={
+            <ProtectedRoute>
+              <UserResources />
             </ProtectedRoute>
           } />
 
