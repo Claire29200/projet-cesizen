@@ -1,4 +1,4 @@
-# Guide d'Installation de Serenity Guidance Tool
+# Guide d'Installation du Projet CESIZen - Prenez soin de votre santé mentale au quotidien.
 
 ## Prérequis
 
