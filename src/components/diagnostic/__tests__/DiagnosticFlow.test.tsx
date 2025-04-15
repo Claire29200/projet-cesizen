@@ -1,7 +1,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@/test/test-utils';
-import { useDiagnosticStore } from '@/store/diagnosticStore';
+import { useDiagnosticStore } from '@/store/diagnostic';
 import { DiagnosticQuestion } from '../DiagnosticQuestion';
 import { diagnosticController } from '@/controllers/diagnosticController';
 

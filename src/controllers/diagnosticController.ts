@@ -1,6 +1,6 @@
 
 import { toast } from "@/components/ui/use-toast";
-import { useDiagnosticStore } from "@/store/diagnosticStore";
+import { useDiagnosticStore } from "@/store/diagnostic";
 import { supabase } from "@/integrations/supabase/client";
 import { StressQuestion, DiagnosticResult } from "@/models/diagnostic";
 

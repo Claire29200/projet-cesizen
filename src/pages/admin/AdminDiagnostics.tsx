@@ -41,7 +41,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { useDiagnosticStore } from "@/store/diagnosticStore";
+import { useDiagnosticStore } from "@/store/diagnostic";
 import { motion } from "framer-motion";
 import { Search, Plus, Edit, Trash2, ArrowUp, ArrowDown, SlidersHorizontal } from "lucide-react";
 

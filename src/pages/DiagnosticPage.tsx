@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useDiagnosticStore } from "@/store/diagnosticStore";
+import { useDiagnosticStore } from "@/store/diagnostic";
 import { useAuthStore } from "@/store/auth";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { DiagnosticQuestion } from "@/components/diagnostic/DiagnosticQuestion";

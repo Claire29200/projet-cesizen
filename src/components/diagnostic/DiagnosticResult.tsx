@@ -1,10 +1,11 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { AlertTriangle, BookOpen, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { DiagnosticResult, FeedbackLevel } from "@/store/diagnosticStore";
+import { DiagnosticResult, FeedbackLevel } from "@/store/diagnostic";
 import { useAuthStore } from '@/store/auth';
 
 interface DiagnosticResultProps {
