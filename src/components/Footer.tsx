@@ -97,7 +97,7 @@ export function Footer() {
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-mental-600 text-sm">
-            &copy; {currentYear} SantéMentale. Tous droits réservés.
+            &copy; {currentYear} Claire Simonot. Tous droits réservés.
           </p>
           <p className="text-mental-600 text-sm flex items-center">
             Conçu avec <Heart className="h-3 w-3 mx-1 text-red-500" /> pour le bien-être mental
