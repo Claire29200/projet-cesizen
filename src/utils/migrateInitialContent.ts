@@ -33,18 +33,20 @@ export const migrateInitialContent = async () => {
     const storePages = useContentStore.getState().infoPages;
     
     for (const page of storePages) {
+      // Préparer les données conformes au schéma de Supabase
+      const pageInsertData = {
+        title: page.title,
+        slug: page.slug,
+        is_published: page.isPublished,
+        user_id: page.userId || null,
+        created_at: new Date(page.createdAt).toISOString(),
+        updated_at: new Date(page.updatedAt).toISOString()
+      };
+      
       // Insérer la page
       const { data: pageData, error: pageError } = await supabase
         .from('info_pages')
-        .insert({
-          id: page.id,  // Utiliser le même ID pour maintenir les références
-          title: page.title,
-          slug: page.slug,
-          is_published: page.isPublished,
-          user_id: page.userId,
-          created_at: page.createdAt,
-          updated_at: page.updatedAt
-        })
+        .insert(pageInsertData)
         .select()
         .single();
       
@@ -52,16 +54,22 @@ export const migrateInitialContent = async () => {
         throw new Error(`Erreur lors de l'insertion de la page ${page.title}: ${pageError.message}`);
       }
       
-      // Insérer les sections
+      if (!pageData) {
+        throw new Error(`Erreur lors de l'insertion de la page ${page.title}: Aucune donnée retournée`);
+      }
+      
+      // Préparer les sections pour cette page
       const sectionsToInsert = page.sections.map((section, index) => ({
-        id: section.id,  // Utiliser le même ID
-        page_id: page.id,
+        page_id: pageData.id,
         title: section.title,
         content: section.content,
         position: index,
-        updated_at: section.updatedAt
+        updated_at: typeof section.updatedAt === 'string' 
+          ? section.updatedAt 
+          : new Date(section.updatedAt).toISOString()
       }));
       
+      // Insérer les sections
       const { error: sectionsError } = await supabase
         .from('content_sections')
         .insert(sectionsToInsert);
