@@ -7,7 +7,7 @@ export interface AuthState {
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string) => Promise<boolean>;
-  logout: () => Promise<void>;
+  logout: () => Promise<boolean>; // Modifié de Promise<void> à Promise<boolean>
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
   resetPassword: (email: string) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;

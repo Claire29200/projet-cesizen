@@ -4,7 +4,7 @@ import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 import { useAuthStore } from "@/store/auth";
-import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export function LogoutButton() {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
@@ -18,9 +18,13 @@ export function LogoutButton() {
   const handleConfirmLogout = async () => {
     setIsLoading(true);
     try {
-      await logout();
+      const success = await logout();
+      if (!success) {
+        toast.error("Erreur lors de la déconnexion");
+      }
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
+      toast.error("Erreur lors de la déconnexion");
     } finally {
       setIsLoading(false);
       setShowLogoutDialog(false);

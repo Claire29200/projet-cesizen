@@ -1,9 +1,11 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogOut } from "lucide-react";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 import { useAuthStore } from "@/store/auth";
+import { toast } from "sonner";
 
 export const AccountActions = () => {
   const { logout } = useAuthStore();
@@ -13,8 +15,11 @@ export const AccountActions = () => {
     setShowLogoutDialog(true);
   };
   
-  const confirmLogout = () => {
-    logout();
+  const confirmLogout = async () => {
+    const success = await logout();
+    if (!success) {
+      toast.error("Erreur lors de la déconnexion");
+    }
     setShowLogoutDialog(false);
   };
   
