@@ -1,7 +1,7 @@
+
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { StressTest } from "@/components/StressTest";
 import { useAuthStore } from "@/store/auth";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -9,15 +9,15 @@ import { Button } from "@/components/ui/button";
 import { MigrateContentHome } from "@/components/MigrateContentHome";
 
 const Index = () => {
-  const { isLoggedIn } = useAuthStore();
-  const [showStressTest, setShowStressTest] = useState(false);
+  const { isAuthenticated } = useAuthStore();
+  const [showLoginOptions, setShowLoginOptions] = useState(false);
 
   useEffect(() => {
-    // Check if the user is logged in when the component mounts
-    if (isLoggedIn) {
-      setShowStressTest(true);
+    // Check if the user is authenticated when the component mounts
+    if (!isAuthenticated) {
+      setShowLoginOptions(true);
     }
-  }, [isLoggedIn]);
+  }, [isAuthenticated]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -41,9 +41,7 @@ const Index = () => {
           
           <MigrateContentHome />
           
-          {showStressTest ? (
-            <StressTest />
-          ) : (
+          {showLoginOptions && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
