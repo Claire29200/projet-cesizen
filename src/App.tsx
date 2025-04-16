@@ -23,7 +23,14 @@ import { SessionManager } from "./components/auth/SessionManager";
 import AboutPage from "./pages/AboutPage";
 
 // Création du client pour React Query
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
