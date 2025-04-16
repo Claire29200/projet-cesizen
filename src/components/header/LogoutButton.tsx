@@ -1,20 +1,30 @@
+
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 import { useAuthStore } from "@/store/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export function LogoutButton() {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const { logout } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogoutClick = () => {
     setShowLogoutDialog(true);
   };
 
-  const handleConfirmLogout = () => {
-    logout();
-    setShowLogoutDialog(false);
+  const handleConfirmLogout = async () => {
+    setIsLoading(true);
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+    } finally {
+      setIsLoading(false);
+      setShowLogoutDialog(false);
+    }
   };
 
   const handleCancelLogout = () => {
@@ -27,6 +37,7 @@ export function LogoutButton() {
         variant="ghost" 
         onClick={handleLogoutClick} 
         className="text-destructive hover:text-destructive hover:bg-destructive/10"
+        disabled={isLoading}
       >
         <LogOut className="w-4 h-4 mr-2" />
         Déconnexion
