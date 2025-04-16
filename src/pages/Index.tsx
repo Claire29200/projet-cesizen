@@ -16,6 +16,8 @@ const Index = () => {
     // Check if the user is authenticated when the component mounts
     if (!isAuthenticated) {
       setShowLoginOptions(true);
+    } else {
+      setShowLoginOptions(false);
     }
   }, [isAuthenticated]);
 
@@ -39,24 +41,24 @@ const Index = () => {
             </p>
           </motion.div>
           
-          <MigrateContentHome />
+          {isAuthenticated && <MigrateContentHome />}
           
-          {showLoginOptions && (
+          {showLoginOptions && !isAuthenticated && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-center"
+              className="text-center mt-12"
             >
               <p className="text-lg text-mental-600 mb-8">
                 Pour commencer, veuillez vous connecter ou créer un compte.
               </p>
               <div className="space-x-4">
                 <Button asChild variant="outline">
-                  <Link to="/login">Se connecter</Link>
+                  <Link to="/connexion">Se connecter</Link>
                 </Button>
                 <Button asChild>
-                  <Link to="/register">S'inscrire</Link>
+                  <Link to="/inscription">S'inscrire</Link>
                 </Button>
               </div>
             </motion.div>
