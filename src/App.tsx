@@ -20,7 +20,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFound from "./pages/NotFound";
 import { SessionManager } from "./components/auth/SessionManager";
+import AboutPage from "./pages/AboutPage";
 
+// Création du client pour React Query
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -38,6 +40,7 @@ const App = () => (
           <Route path="/connexion" element={<Login />} />
           <Route path="/inscription" element={<Register />} />
           <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
+          <Route path="/a-propos" element={<AboutPage />} />
 
           {/* Protected routes for logged in users */}
           <Route path="/profil" element={
