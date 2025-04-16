@@ -50,8 +50,8 @@ L'application suit une architecture MVC adaptée au frontend :
 
 Pour tester l'application rapidement, vous pouvez utiliser les comptes de démonstration :
 
-- **Admin** : admin@example.com / admin123
-- **Utilisateur** : user@example.com / user123
+- **Admin** : claire.simonot@protonmail.com / user123456
+- **Utilisateur** : brestoise6@gmail.com / 123456
 
 ## Technologies utilisées
 
