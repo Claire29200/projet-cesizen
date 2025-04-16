@@ -15,13 +15,19 @@ export const AccountActions = () => {
   const navigate = useNavigate();
   
   const handleLogout = () => {
+    if (isLoading) return;
     setShowLogoutDialog(true);
   };
   
   const confirmLogout = async () => {
+    if (isLoading) return;
     setIsLoading(true);
+    
     try {
       console.log('AccountActions: Déconnexion initiée');
+      // Mettre un court délai pour permettre à l'UI de se mettre à jour
+      await new Promise(resolve => setTimeout(resolve, 10));
+      
       const success = await logout();
       if (!success) {
         toast.error("Erreur lors de la déconnexion");
@@ -62,6 +68,7 @@ export const AccountActions = () => {
         isOpen={showLogoutDialog} 
         onClose={() => !isLoading && setShowLogoutDialog(false)} 
         onConfirm={confirmLogout} 
+        isLoading={isLoading}
       />
     </>
   );

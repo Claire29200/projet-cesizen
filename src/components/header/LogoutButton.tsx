@@ -14,13 +14,19 @@ export function LogoutButton() {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
+    if (isLoading) return;
     setShowLogoutDialog(true);
   };
 
   const handleConfirmLogout = async () => {
+    if (isLoading) return;
     setIsLoading(true);
+    
     try {
       console.log('LogoutButton: Déconnexion initiée');
+      // Mettre un court délai pour permettre à l'UI de se mettre à jour
+      await new Promise(resolve => setTimeout(resolve, 10));
+      
       const success = await logout();
       if (!success) {
         toast.error("Erreur lors de la déconnexion");
@@ -40,6 +46,7 @@ export function LogoutButton() {
   };
 
   const handleCancelLogout = () => {
+    if (isLoading) return;
     setShowLogoutDialog(false);
   };
 
@@ -59,6 +66,7 @@ export function LogoutButton() {
         isOpen={showLogoutDialog}
         onClose={handleCancelLogout}
         onConfirm={handleConfirmLogout}
+        isLoading={isLoading}
       />
     </>
   );

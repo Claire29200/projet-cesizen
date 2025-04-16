@@ -10,26 +10,19 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
 
 interface LogoutConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void>;
+  isLoading?: boolean;
 }
 
-export function LogoutConfirmDialog({ isOpen, onClose, onConfirm }: LogoutConfirmDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const handleConfirm = async () => {
-    setIsLoading(true);
-    try {
-      console.log('LogoutConfirmDialog: Confirmation de déconnexion');
-      await onConfirm();
-    } catch (error) {
-      console.error('Erreur lors de la confirmation de déconnexion:', error);
-    }
-    // Ne pas réinitialiser isLoading ici, car le composant sera mis à jour par le parent
+export function LogoutConfirmDialog({ isOpen, onClose, onConfirm, isLoading = false }: LogoutConfirmDialogProps) {
+  const handleConfirm = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isLoading) return;
+    await onConfirm();
   };
   
   return (
@@ -52,10 +45,7 @@ export function LogoutConfirmDialog({ isOpen, onClose, onConfirm }: LogoutConfir
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isLoading}>Annuler</AlertDialogCancel>
           <AlertDialogAction 
-            onClick={(e) => {
-              e.preventDefault();
-              handleConfirm();
-            }} 
+            onClick={handleConfirm} 
             disabled={isLoading}
             className="bg-destructive hover:bg-destructive/90"
           >

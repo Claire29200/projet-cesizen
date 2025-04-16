@@ -1,5 +1,5 @@
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,47 +13,63 @@ const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) =>
   const { isAuthenticated, isAdmin, logout } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
+  const handlingLogout = useRef(false);
 
   useEffect(() => {
-    // Check authentication state when component mounts
+    // Vérification au montage uniquement
     const checkAuth = async () => {
       const { data } = await supabase.auth.getSession();
-      if (!data.session) {
-        if (isAuthenticated) {
-          console.log('ProtectedRoute: Session invalide détectée, déconnexion');
-          const success = await logout();
-          if (success) {
-            navigate('/connexion', { state: { from: location }, replace: true });
+      if (!data.session && isAuthenticated && !handlingLogout.current) {
+        console.log('ProtectedRoute: Session invalide détectée, déconnexion');
+        handlingLogout.current = true;
+        
+        // Utilisation de setTimeout pour éviter les appels bloquants
+        setTimeout(async () => {
+          try {
+            const success = await logout();
+            if (success) {
+              navigate('/connexion', { state: { from: location }, replace: true });
+            }
+          } finally {
+            handlingLogout.current = false;
           }
-        }
+        }, 10);
       }
     };
 
     checkAuth();
 
-    // Set up auth state change listener
+    // Configuration du gestionnaire d'événements
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT' && isAuthenticated && !handlingLogout.current) {
         console.log('ProtectedRoute: Événement SIGNED_OUT détecté');
-        logout().then(() => {
-          navigate('/connexion', { state: { from: location }, replace: true });
-        });
+        handlingLogout.current = true;
+        
+        // Utilisation de setTimeout pour éviter les appels bloquants
+        setTimeout(async () => {
+          try {
+            await logout();
+            navigate('/connexion', { state: { from: location }, replace: true });
+          } finally {
+            handlingLogout.current = false;
+          }
+        }, 10);
       }
     });
 
-    // Cleanup subscription
+    // Nettoyage de l'abonnement
     return () => {
       subscription.unsubscribe();
     };
   }, [isAuthenticated, logout, navigate, location]);
 
   if (!isAuthenticated) {
-    // Redirect to login page with the return url
+    // Redirection vers la page de connexion avec l'URL de retour
     return <Navigate to="/connexion" state={{ from: location }} replace />;
   }
 
   if (adminOnly && !isAdmin) {
-    // If admin access is required but user is not admin, redirect to home
+    // Si l'accès administrateur est requis mais que l'utilisateur n'est pas administrateur, redirection vers l'accueil
     return <Navigate to="/" replace />;
   }
 

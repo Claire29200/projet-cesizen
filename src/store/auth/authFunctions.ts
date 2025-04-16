@@ -108,7 +108,15 @@ export const logout = async (set: any) => {
   try {
     console.log('Déconnexion initiée');
     
-    // Déconnexion de Supabase
+    // Mise à jour du store AVANT la déconnexion de Supabase
+    // Cela évite les problèmes de timing et de boucles
+    set({
+      user: null,
+      isAuthenticated: false,
+      isAdmin: false,
+    });
+    
+    // Déconnexion de Supabase après la mise à jour du store
     const { error } = await supabase.auth.signOut();
     
     if (error) {
@@ -117,15 +125,7 @@ export const logout = async (set: any) => {
       return false;
     }
     
-    console.log('Déconnexion Supabase réussie, mise à jour du store');
-    
-    // Mise à jour du store
-    set({
-      user: null,
-      isAuthenticated: false,
-      isAdmin: false,
-    });
-    
+    console.log('Déconnexion Supabase réussie');
     toast.success('Déconnexion réussie');
     return true;
   } catch (error) {
