@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 import { useAuthStore } from "@/store/auth";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export function LogoutButton() {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const { logout } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogoutClick = () => {
     setShowLogoutDialog(true);
@@ -21,6 +23,9 @@ export function LogoutButton() {
       const success = await logout();
       if (!success) {
         toast.error("Erreur lors de la déconnexion");
+      } else {
+        // Force navigation vers la page d'accueil après déconnexion
+        navigate('/', { replace: true });
       }
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);

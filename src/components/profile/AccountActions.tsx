@@ -6,10 +6,12 @@ import { LogOut } from "lucide-react";
 import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 import { useAuthStore } from "@/store/auth";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 export const AccountActions = () => {
   const { logout } = useAuthStore();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const navigate = useNavigate();
   
   const handleLogout = () => {
     setShowLogoutDialog(true);
@@ -19,6 +21,8 @@ export const AccountActions = () => {
     const success = await logout();
     if (!success) {
       toast.error("Erreur lors de la déconnexion");
+    } else {
+      navigate('/', { replace: true });
     }
     setShowLogoutDialog(false);
   };

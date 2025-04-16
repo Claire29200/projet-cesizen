@@ -15,7 +15,7 @@ import { useState } from "react";
 interface LogoutConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
 }
 
 export function LogoutConfirmDialog({ isOpen, onClose, onConfirm }: LogoutConfirmDialogProps) {
@@ -23,12 +23,17 @@ export function LogoutConfirmDialog({ isOpen, onClose, onConfirm }: LogoutConfir
   
   const handleConfirm = async () => {
     setIsLoading(true);
-    await onConfirm();
-    setIsLoading(false);
+    try {
+      await onConfirm();
+    } catch (error) {
+      console.error('Erreur lors de la confirmation de déconnexion:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   return (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
+    <AlertDialog open={isOpen} onOpenChange={(open) => !open && !isLoading && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Confirmer la déconnexion</AlertDialogTitle>

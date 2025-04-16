@@ -106,14 +106,20 @@ export const register = async (name: string, email: string, password: string, se
 
 export const logout = async (set: any) => {
   try {
+    console.log('Déconnexion initiée');
+    
+    // Déconnexion de Supabase
     const { error } = await supabase.auth.signOut();
     
     if (error) {
-      console.error('Logout error:', error.message);
+      console.error('Erreur Supabase lors de la déconnexion:', error.message);
       toast.error(error.message || 'Une erreur est survenue lors de la déconnexion');
       return false;
     }
     
+    console.log('Déconnexion Supabase réussie, mise à jour du store');
+    
+    // Mise à jour du store
     set({
       user: null,
       isAuthenticated: false,
@@ -123,7 +129,7 @@ export const logout = async (set: any) => {
     toast.success('Déconnexion réussie');
     return true;
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error('Erreur lors de la déconnexion:', error);
     toast.error('Une erreur est survenue lors de la déconnexion');
     return false;
   }

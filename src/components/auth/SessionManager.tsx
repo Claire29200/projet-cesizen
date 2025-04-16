@@ -16,6 +16,7 @@ export const SessionManager = () => {
         // Only logout if we thought we were authenticated
         if (isAuthenticated) {
           await logout();
+          navigate('/');
         }
       }
     };
