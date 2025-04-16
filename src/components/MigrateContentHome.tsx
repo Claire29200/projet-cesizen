@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { migrateInitialContent } from "@/utils/migrateInitialContent";
+import { useAuthStore } from "@/store/auth";
 import {
   Dialog,
   DialogContent,
@@ -15,11 +16,21 @@ import {
 
 export const MigrateContentHome = () => {
   const { toast } = useToast();
+  const { isAuthenticated } = useAuthStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMigrating, setIsMigrating] = useState(false);
   const [migrationResult, setMigrationResult] = useState<{ success: boolean, message: string } | null>(null);
 
   const handleMigration = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez être connecté pour migrer les données",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsMigrating(true);
     setMigrationResult(null);
     
@@ -58,11 +69,13 @@ export const MigrateContentHome = () => {
     <div className="mt-8 mb-12 flex flex-col items-center">
       <p className="text-center text-mental-600 mb-4">
         Pour initialiser le contenu de l'application, vous devez d'abord migrer les données.
+        {!isAuthenticated && " Vous devez être connecté pour effectuer cette opération."}
       </p>
       <Button 
         onClick={() => setIsDialogOpen(true)}
         variant="default"
         className="bg-mental-600 hover:bg-mental-700"
+        disabled={!isAuthenticated}
       >
         Migrer les données initiales
       </Button>
