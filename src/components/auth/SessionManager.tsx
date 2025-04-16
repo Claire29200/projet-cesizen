@@ -15,8 +15,11 @@ export const SessionManager = () => {
       if (!data.session) {
         // Only logout if we thought we were authenticated
         if (isAuthenticated) {
-          await logout();
-          navigate('/');
+          const success = await logout();
+          if (success) {
+            console.log('SessionManager: Déconnexion réussie, redirection vers la page d\'accueil');
+            navigate('/', { replace: true });
+          }
         }
       }
     };
@@ -29,8 +32,12 @@ export const SessionManager = () => {
       
       if (event === 'SIGNED_OUT') {
         console.log('User signed out, updating auth state');
-        logout();
-        navigate('/');
+        logout().then(success => {
+          if (success) {
+            console.log('SessionManager: État de déconnexion mis à jour, redirection');
+            navigate('/', { replace: true });
+          }
+        });
       }
     });
 

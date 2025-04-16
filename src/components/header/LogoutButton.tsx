@@ -20,10 +20,13 @@ export function LogoutButton() {
   const handleConfirmLogout = async () => {
     setIsLoading(true);
     try {
+      console.log('LogoutButton: Déconnexion initiée');
       const success = await logout();
       if (!success) {
         toast.error("Erreur lors de la déconnexion");
       } else {
+        console.log('LogoutButton: Déconnexion réussie, redirection');
+        toast.success("Déconnexion réussie");
         // Force navigation vers la page d'accueil après déconnexion
         navigate('/', { replace: true });
       }

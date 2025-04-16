@@ -1,6 +1,6 @@
 
 import { ReactNode, useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,15 +10,22 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) => {
-  const { isAuthenticated, isAdmin, user } = useAuthStore();
+  const { isAuthenticated, isAdmin, logout } = useAuthStore();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check authentication state when component mounts
     const checkAuth = async () => {
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
-        useAuthStore.getState().logout();
+        if (isAuthenticated) {
+          console.log('ProtectedRoute: Session invalide détectée, déconnexion');
+          const success = await logout();
+          if (success) {
+            navigate('/connexion', { state: { from: location }, replace: true });
+          }
+        }
       }
     };
 
@@ -27,7 +34,10 @@ const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) =>
     // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
-        useAuthStore.getState().logout();
+        console.log('ProtectedRoute: Événement SIGNED_OUT détecté');
+        logout().then(() => {
+          navigate('/connexion', { state: { from: location }, replace: true });
+        });
       }
     });
 
@@ -35,7 +45,7 @@ const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) =>
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [isAuthenticated, logout, navigate, location]);
 
   if (!isAuthenticated) {
     // Redirect to login page with the return url

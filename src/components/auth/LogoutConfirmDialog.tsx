@@ -24,16 +24,24 @@ export function LogoutConfirmDialog({ isOpen, onClose, onConfirm }: LogoutConfir
   const handleConfirm = async () => {
     setIsLoading(true);
     try {
+      console.log('LogoutConfirmDialog: Confirmation de déconnexion');
       await onConfirm();
     } catch (error) {
       console.error('Erreur lors de la confirmation de déconnexion:', error);
-    } finally {
-      setIsLoading(false);
     }
+    // Ne pas réinitialiser isLoading ici, car le composant sera mis à jour par le parent
   };
   
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !open && !isLoading && onClose()}>
+    <AlertDialog 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        if (!open && !isLoading) {
+          console.log('LogoutConfirmDialog: Fermeture de la boîte de dialogue');
+          onClose();
+        }
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Confirmer la déconnexion</AlertDialogTitle>
@@ -44,7 +52,10 @@ export function LogoutConfirmDialog({ isOpen, onClose, onConfirm }: LogoutConfir
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isLoading}>Annuler</AlertDialogCancel>
           <AlertDialogAction 
-            onClick={handleConfirm} 
+            onClick={(e) => {
+              e.preventDefault();
+              handleConfirm();
+            }} 
             disabled={isLoading}
             className="bg-destructive hover:bg-destructive/90"
           >
