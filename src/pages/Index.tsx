@@ -51,7 +51,7 @@ const Index = () => {
               className="text-center mt-12"
             >
               <p className="text-lg text-mental-600 mb-8">
-                Pour commencer, veuillez vous connecter ou créer un compte.
+                N'hésitez pas à parcourir nos ressources sur la santé mentale dans la page Informations.
               </p>
               <div className="space-x-4">
                 <Button asChild variant="outline">
