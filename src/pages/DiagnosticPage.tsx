@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDiagnosticStore } from "@/store/diagnostic";
 import { useAuthStore } from "@/store/auth";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, FileText } from "lucide-react";
 import { DiagnosticQuestion } from "@/components/diagnostic/DiagnosticQuestion";
 import { DiagnosticResultView } from "@/components/diagnostic/DiagnosticResult";
 
@@ -122,6 +122,19 @@ const DiagnosticPage = () => {
       
       <main className="flex-grow pt-24 pb-16">
         <div className="container max-w-3xl mx-auto px-4">
+          {!showResults && (
+            <div className="mb-6 text-right">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/diagnostic/holmes-rahe")}
+                className="flex items-center"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Évaluation des événements de vie (Holmes et Rahe)
+              </Button>
+            </div>
+          )}
+          
           <AnimatePresence mode="wait">
             {!showResults ? (
               <motion.div

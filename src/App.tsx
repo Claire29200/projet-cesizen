@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import InformationsList from "./pages/InformationsList";
 import InformationPage from "./pages/InformationPage";
 import DiagnosticPage from "./pages/DiagnosticPage";
+import HolmesRaheScalePage from "./pages/HolmesRaheScalePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/informations" element={<InformationsList />} />
           <Route path="/informations/:slug" element={<InformationPage />} />
           <Route path="/diagnostic" element={<DiagnosticPage />} />
+          <Route path="/diagnostic/holmes-rahe" element={<HolmesRaheScalePage />} />
           <Route path="/connexion" element={<Login />} />
           <Route path="/inscription" element={<Register />} />
           <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />

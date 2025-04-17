@@ -1,4 +1,5 @@
-import { StressQuestion, FeedbackLevel } from './types';
+
+import { StressQuestion, FeedbackLevel, HolmesRaheEvent } from './types';
 
 // Initial questions for stress diagnostic
 export const initialQuestions: StressQuestion[] = [
@@ -115,7 +116,7 @@ export const holmesRaheEvents: HolmesRaheEvent[] = [
   { id: '6', event: 'Blessure ou maladie personnelle', points: 53 },
   { id: '7', event: 'Mariage', points: 50 },
   { id: '8', event: 'Licenciement', points: 47 },
-  { id: '9', event: 'Réconciliation conjugale', points: 45 },
+  { id: '9', event: 'Réconciliation conjugale', points: 45 }
 ];
 
 export const holmesRaheFeedback = [

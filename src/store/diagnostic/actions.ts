@@ -1,5 +1,7 @@
+
 import { StoreApi } from 'zustand';
 import { DiagnosticState, StressQuestion, FeedbackLevel, DiagnosticResult, HolmesRaheResult } from './types';
+import { holmesRaheEvents, holmesRaheFeedback } from './initialData';
 
 // Create store actions that will be used in the main store
 export const createDiagnosticActions = (set: StoreApi<DiagnosticState>['setState'], get: StoreApi<DiagnosticState>['getState']) => ({
