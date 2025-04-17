@@ -108,34 +108,34 @@ export const initialFeedbacks: FeedbackLevel[] = [
 ];
 
 export const holmesRaheEvents: HolmesRaheEvent[] = [
-  { id: '1', event: 'Décès du conjoint', points: 100 },
-  { id: '2', event: 'Divorce', points: 73 },
-  { id: '3', event: 'Séparation conjugale', points: 65 },
-  { id: '4', event: 'Emprisonnement', points: 63 },
-  { id: '5', event: 'Décès d'un proche', points: 63 },
-  { id: '6', event: 'Blessure ou maladie personnelle', points: 53 },
-  { id: '7', event: 'Mariage', points: 50 },
-  { id: '8', event: 'Licenciement', points: 47 },
-  { id: '9', event: 'Réconciliation conjugale', points: 45 }
+  { id: '1', event: "Décès du conjoint", points: 100 },
+  { id: '2', event: "Divorce", points: 73 },
+  { id: '3', event: "Séparation conjugale", points: 65 },
+  { id: '4', event: "Emprisonnement", points: 63 },
+  { id: '5', event: "Décès d'un proche", points: 63 },
+  { id: '6', event: "Blessure ou maladie personnelle", points: 53 },
+  { id: '7', event: "Mariage", points: 50 },
+  { id: '8', event: "Licenciement", points: 47 },
+  { id: '9', event: "Réconciliation conjugale", points: 45 }
 ];
 
 export const holmesRaheFeedback = [
   {
     minScore: 0,
     maxScore: 150,
-    label: 'Faible risque de maladie',
-    description: 'Votre niveau de stress lié aux événements de vie est faible.'
+    label: "Faible risque de maladie",
+    description: "Votre niveau de stress lié aux événements de vie est faible."
   },
   {
     minScore: 151,
     maxScore: 299,
-    label: 'Risque modéré',
-    description: 'Vous avez un risque modéré de développer un problème de santé lié au stress.'
+    label: "Risque modéré",
+    description: "Vous avez un risque modéré de développer un problème de santé lié au stress."
   },
   {
     minScore: 300,
     maxScore: 600,
-    label: 'Risque élevé',
-    description: 'Votre niveau de stress est élevé. Il est recommandé de consulter un professionnel.'
+    label: "Risque élevé",
+    description: "Votre niveau de stress est élevé. Il est recommandé de consulter un professionnel."
   }
 ];
