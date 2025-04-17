@@ -1,6 +1,5 @@
+
 import { StoreApi } from 'zustand';
-import { DiagnosticState, StressQuestion, FeedbackLevel, DiagnosticResult } from './types';
-import { holmesRaheEvents, holmesRaheFeedback } from './initialData';
 
 // Types related to diagnostic functionality
 export interface StressQuestion {
@@ -67,4 +66,7 @@ export interface DiagnosticState {
   getLatestResultForUser: (userId: string | null) => DiagnosticResult | undefined;
   getFeedbackForScore: (score: number) => { label: string; description: string };
   getHolmesRaheResultCategory: (score: number) => { label: string; description: string };
+  
+  // Adding the missing method
+  saveHolmesRaheResult: (result: Omit<HolmesRaheResult, 'id' | 'date'>) => string;
 }
