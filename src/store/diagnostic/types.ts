@@ -1,3 +1,6 @@
+import { StoreApi } from 'zustand';
+import { DiagnosticState, StressQuestion, FeedbackLevel, DiagnosticResult } from './types';
+import { holmesRaheEvents, holmesRaheFeedback } from './initialData';
 
 // Types related to diagnostic functionality
 export interface StressQuestion {
@@ -29,10 +32,23 @@ export interface FeedbackLevel {
   description: string;
 }
 
+export interface HolmesRaheEvent {
+  id: string;
+  event: string;
+  points: number;
+  category?: string;
+}
+
+export interface HolmesRaheResult extends DiagnosticResult {
+  stressScore: number;
+  riskCategory: 'Faible' | 'Moyen' | 'Élevé';
+}
+
 export interface DiagnosticState {
   questions: StressQuestion[];
   results: DiagnosticResult[];
   feedbacks: FeedbackLevel[];
+  holmesRaheEvents: HolmesRaheEvent[];
   
   // Methods for admin
   updateQuestion: (question: StressQuestion) => void;
@@ -50,4 +66,5 @@ export interface DiagnosticState {
   getAllResults: () => DiagnosticResult[];
   getLatestResultForUser: (userId: string | null) => DiagnosticResult | undefined;
   getFeedbackForScore: (score: number) => { label: string; description: string };
+  getHolmesRaheResultCategory: (score: number) => { label: string; description: string };
 }

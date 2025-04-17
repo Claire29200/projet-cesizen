@@ -1,6 +1,5 @@
-
 import { StoreApi } from 'zustand';
-import { DiagnosticState, StressQuestion, FeedbackLevel, DiagnosticResult } from './types';
+import { DiagnosticState, StressQuestion, FeedbackLevel, DiagnosticResult, HolmesRaheResult } from './types';
 
 // Create store actions that will be used in the main store
 export const createDiagnosticActions = (set: StoreApi<DiagnosticState>['setState'], get: StoreApi<DiagnosticState>['getState']) => ({
@@ -110,5 +109,33 @@ export const createDiagnosticActions = (set: StoreApi<DiagnosticState>['setState
       label: "Score inconnu",
       description: "Nous n'avons pas pu déterminer un feedback pour votre score. Veuillez contacter un professionnel pour une évaluation personnalisée."
     };
+  },
+  
+  holmesRaheEvents: holmesRaheEvents,
+  
+  getHolmesRaheResultCategory: (score: number) => {
+    const feedback = holmesRaheFeedback.find(
+      level => score >= level.minScore && score <= level.maxScore
+    );
+    
+    return feedback || {
+      label: 'Inconnu',
+      description: 'Impossible de déterminer la catégorie de risque.'
+    };
+  },
+
+  saveHolmesRaheResult: (resultData: Omit<HolmesRaheResult, 'id' | 'date'>) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newResult: HolmesRaheResult = {
+      id,
+      date: new Date(),
+      ...resultData
+    };
+    
+    set(state => ({
+      results: [...state.results, newResult]
+    }));
+    
+    return id;
   }
 });
