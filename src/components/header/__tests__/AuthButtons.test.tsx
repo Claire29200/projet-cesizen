@@ -59,7 +59,7 @@ describe('AuthButtons - Scénarios utilisateur', () => {
     it("déclenche la fonction de déconnexion quand le bouton est cliqué", async () => {
       const logoutMock = vi.fn();
       
-      // On simule que le composant LogoutButton déclenche la fonction onLogoutClick
+      // Remplacer le mock de LogoutButton pour ce test spécifique
       vi.mock('../LogoutButton', () => ({
         LogoutButton: ({ onLogout }) => (
           <button 
@@ -69,7 +69,7 @@ describe('AuthButtons - Scénarios utilisateur', () => {
             Déconnexion
           </button>
         )
-      }), { virtual: true });
+      }));
       
       render(<AuthButtons isAuthenticated={true} isAdmin={false} onLogoutClick={logoutMock} />);
       
