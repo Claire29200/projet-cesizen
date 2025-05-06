@@ -31,9 +31,9 @@ const Index = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center mb-12 content-section depth-effect"
+            className="text-center mb-12"
           >
-            <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-mental-800 mb-4">
               Bienvenue sur CESIZen
             </h1>
             <p className="text-xl text-mental-600 max-w-3xl mx-auto">
@@ -48,16 +48,16 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-center mt-12 content-section wave-animation"
+              className="text-center mt-12"
             >
-              <p className="text-lg mb-8">
+              <p className="text-lg text-mental-600 mb-8">
                 N'hésitez pas à parcourir nos ressources sur la santé mentale dans la page Informations.
               </p>
               <div className="space-x-4">
-                <Button asChild variant="outline" className="backdrop-blur-sm bg-white/40 border-white/30 hover:bg-white/60">
+                <Button asChild variant="outline">
                   <Link to="/connexion">Se connecter</Link>
                 </Button>
-                <Button asChild className="turquoise-glow bg-gradient-to-r from-ocean-500 to-aqua-400 hover:from-ocean-600 hover:to-aqua-500">
+                <Button asChild>
                   <Link to="/inscription">S'inscrire</Link>
                 </Button>
               </div>

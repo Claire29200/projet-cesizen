@@ -63,45 +63,32 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Nouvelle palette de couleurs basée sur l'infographie
-				ocean: {
-					50: '#E1F7F6',
-					100: '#B5EBE8',
-					200: '#88DFDA',
-					300: '#5BD2CC',
-					400: '#36C7C0', // Turquoise clair
-					500: '#01877C', // Turquoise principal
-					600: '#017A70',
-					700: '#016A61',
-					800: '#015A52',
-					900: '#003C37',
-					950: '#002622',
+				// On remplace mental par cesi
+				cesi: {
+					50: '#f2fcf6',
+					100: '#e6f9ee',
+					200: '#bff0d4',
+					300: '#86e1b1',
+					400: '#43c785', // Vert clair
+					500: '#00B65B', // Vert principal
+					600: '#00a34f',
+					700: '#007e3d',
+					800: '#006331',
+					900: '#00341b',
+					950: '#001a0d',
 				},
-				aqua: {
-					50: '#E5F7FD',
-					100: '#CCF0FB',
-					200: '#99E0F8',
-					300: '#65CFFF', // Bleu clair dans l'iceberg
-					400: '#3CAED3', // Bleu moyen dans l'iceberg
-					500: '#0082B3',
-					600: '#00688F',
-					700: '#004E6B',
-					800: '#003448',
-					900: '#001A24',
-					950: '#000D12',
-				},
-				lime: {
-					50: '#F3FCEB',
-					100: '#E8F9D7',
-					200: '#D0F3AF',
-					300: '#B9ED87',
-					400: '#A2E65E', // Accent vert lime
-					500: '#8BDF36',
-					600: '#70B22B',
-					700: '#548621',
-					800: '#395916',
-					900: '#1D2C0B',
-					950: '#0F1605',
+				zen: {
+					50: '#fefce8',
+					100: '#fef9c3',
+					200: '#fef08a',
+					300: '#fde047',
+					400: '#facc15', // Jaune clair
+					500: '#f0c000', // Jaune principal
+					600: '#ca8a04',
+					700: '#a16207',
+					800: '#854d0e',
+					900: '#713f12',
+					950: '#422006',
 				}
 			},
 			borderRadius: {
@@ -141,12 +128,6 @@ export default {
 				breathe: {
 					'0%, 100%': { transform: 'scale(1)' },
 					'50%': { transform: 'scale(1.05)' }
-				},
-				wave: {
-					'0%, 100%': { transform: 'translateY(0)' },
-					'25%': { transform: 'translateY(-5px)' },
-					'50%': { transform: 'translateY(0)' },
-					'75%': { transform: 'translateY(5px)' }
 				}
 			},
 			animation: {
@@ -156,12 +137,7 @@ export default {
 				'slide-up': 'slideUp 0.6s ease-out',
 				'pulse-slow': 'pulse 4s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
-				'breathe': 'breathe 8s ease-in-out infinite',
-				'wave': 'wave 10s ease-in-out infinite'
-			},
-			backgroundImage: {
-				'ocean-gradient': 'linear-gradient(180deg, #01877C 0%, #3CAED3 100%)',
-				'iceberg-gradient': 'linear-gradient(to bottom, #01877C 0%, #3CAED3 50%, #65CFFF 100%)'
+				'breathe': 'breathe 8s ease-in-out infinite'
 			}
 		}
 	},
