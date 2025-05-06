@@ -15,6 +15,14 @@ vi.mock('@/store/auth', () => ({
   }
 }));
 
+// Mock de react-router-dom
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => vi.fn(),
+  Link: ({ children, to }) => (
+    <a href={to}>{children}</a>
+  ),
+}));
+
 // Mock de composants
 vi.mock('lucide-react', () => ({
   LogOut: () => <div data-testid="logout-icon">LogoutIcon</div>

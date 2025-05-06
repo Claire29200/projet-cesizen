@@ -19,12 +19,9 @@ export const createMockInfoPage = (overrides: Partial<InfoPage> = {}): InfoPage 
   };
 };
 
+// Pour éviter les erreurs avec les mocks, définir un wrapper simple sans BrowserRouter
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <BrowserRouter>
-      {children}
-    </BrowserRouter>
-  );
+  return <div data-testid="test-wrapper">{children}</div>;
 };
 
 const customRender = (

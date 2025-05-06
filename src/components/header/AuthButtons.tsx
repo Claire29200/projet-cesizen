@@ -12,7 +12,7 @@ interface AuthButtonsProps {
   onLogoutClick: () => void;
 }
 
-export function AuthButtons({ isAuthenticated, isAdmin }: AuthButtonsProps) {
+export function AuthButtons({ isAuthenticated, isAdmin, onLogoutClick }: AuthButtonsProps) {
   // Créer automatiquement les utilisateurs de démonstration au chargement de l'application
   const { createDemoUsers } = useAuthStore();
   

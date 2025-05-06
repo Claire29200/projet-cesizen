@@ -50,6 +50,26 @@ vi.mock('framer-motion', () => ({
   }
 }));
 
+// Mock des composants UI de shadcn
+vi.mock('@/components/ui/button', () => ({
+  Button: ({ children, ...props }) => <button {...props}>{children}</button>
+}));
+
+vi.mock('@/components/ui/input', () => ({
+  Input: (props) => <input {...props} />
+}));
+
+vi.mock('@/components/ui/label', () => ({
+  Label: ({ htmlFor, children }) => <label htmlFor={htmlFor}>{children}</label>
+}));
+
+vi.mock('lucide-react', () => ({
+  Eye: () => <div data-testid="eye-icon">Eye</div>,
+  EyeOff: () => <div data-testid="eye-off-icon">EyeOff</div>,
+  Lock: () => <div data-testid="lock-icon">Lock</div>,
+  Mail: () => <div data-testid="mail-icon">Mail</div>
+}));
+
 describe('Login Page - Scénario de connexion', () => {
   beforeEach(() => {
     vi.clearAllMocks();

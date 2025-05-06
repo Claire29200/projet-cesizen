@@ -1,3 +1,4 @@
+
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '../../../test/test-utils';
 import { AuthButtons } from '../AuthButtons';
@@ -13,7 +14,7 @@ vi.mock('@/store/auth', () => ({
   }
 }));
 
-// Mock the router
+// Mock the router with explicit implementation
 vi.mock('react-router-dom', () => ({
   Link: ({ children, to, ...props }) => (
     <a href={to} {...props} data-testid={`link-${to.replace(/\//g, '-')}`}>
@@ -68,7 +69,7 @@ describe('AuthButtons - Scénarios utilisateur', () => {
             Déconnexion
           </button>
         )
-      }));
+      }), { virtual: true });
       
       render(<AuthButtons isAuthenticated={true} isAdmin={false} onLogoutClick={logoutMock} />);
       
