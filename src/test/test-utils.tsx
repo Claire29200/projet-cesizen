@@ -1,7 +1,6 @@
 
 import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 import { InfoPage } from '@/models/content';
 
 // Mock InfoPage factory function to help with creating test data
@@ -19,7 +18,7 @@ export const createMockInfoPage = (overrides: Partial<InfoPage> = {}): InfoPage 
   };
 };
 
-// Pour éviter les erreurs avec les mocks, définir un wrapper simple sans BrowserRouter
+// Wrapper simple sans BrowserRouter pour éviter les problèmes de mock
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return <div data-testid="test-wrapper">{children}</div>;
 };

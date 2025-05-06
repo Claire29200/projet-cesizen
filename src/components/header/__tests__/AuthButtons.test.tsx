@@ -61,7 +61,7 @@ describe('AuthButtons - Scénarios utilisateur', () => {
       
       // Remplacer le mock de LogoutButton pour ce test spécifique
       vi.mock('../LogoutButton', () => ({
-        LogoutButton: ({ onLogout }) => (
+        LogoutButton: () => (
           <button 
             data-testid="logout-button" 
             onClick={logoutMock}

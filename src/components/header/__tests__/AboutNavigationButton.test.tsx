@@ -20,15 +20,15 @@ describe('AboutNavigationButton', () => {
 
   it('uses default variant when on about page', () => {
     render(<AboutNavigationButton currentPath="/a-propos" />);
-    // Vérifie le texte et la présence de l'attribut data-state="active"
-    const buttonElement = screen.getByRole('link');
+    // On utilise getByText pour obtenir le lien
+    const buttonElement = screen.getByText('À propos');
     expect(buttonElement).not.toHaveClass('bg-transparent');
   });
 
   it('uses ghost variant when not on about page', () => {
     render(<AboutNavigationButton currentPath="/" />);
-    // Vérifie le texte et la présence de l'attribut ghost
-    const buttonElement = screen.getByRole('link');
+    // On utilise getByText pour obtenir le lien
+    const buttonElement = screen.getByText('À propos');
     expect(buttonElement).toHaveClass('bg-transparent');
   });
 });

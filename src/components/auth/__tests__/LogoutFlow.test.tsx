@@ -5,7 +5,7 @@ import { LogoutButton } from '@/components/header/LogoutButton';
 import { LogoutConfirmDialog } from '@/components/auth/LogoutConfirmDialog';
 import { useAuthStore } from '@/store/auth';
 
-// Mock de authStore
+// Mock de authStore avec une implémentation correcte
 vi.mock('@/store/auth', () => ({
   useAuthStore: {
     getState: vi.fn().mockReturnValue({
