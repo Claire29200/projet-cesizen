@@ -86,7 +86,10 @@
     @apply antialiased;
   }
   body {
-    @apply bg-background text-foreground font-sans transition-colors duration-200;
+    @apply text-foreground font-sans transition-colors duration-200;
+    background: linear-gradient(135deg, #01877C 0%, #3CAED3 50%, #65CFFF 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 }
 
@@ -141,4 +144,36 @@
 
 .card-glow {
   box-shadow: 0 0 15px rgba(28, 217, 202, 0.3);
+}
+
+/* Nouveaux styles de conteneurs pour l'adaptation au fond dégradé */
+.main-container {
+  @apply bg-white/20 backdrop-blur-md rounded-2xl shadow-xl border border-white/30;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1400px;
+}
+
+.content-section {
+  @apply bg-white/80 backdrop-blur-lg rounded-xl shadow-md border border-white/40;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Effet de profondeur pour l'effet iceberg */
+.depth-effect {
+  box-shadow: 
+    0 5px 15px rgba(1, 135, 124, 0.2),
+    0 15px 35px rgba(60, 174, 211, 0.2),
+    0 30px 60px rgba(101, 207, 255, 0.15);
+}
+
+/* Animation d'onde pour rappeler l'eau */
+@keyframes wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.wave-animation {
+  animation: wave 8s ease-in-out infinite;
 }

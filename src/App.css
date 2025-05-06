@@ -42,7 +42,7 @@
   color: #888;
 }
 
-/* Nouveaux styles inspirés par l'iceberg */
+/* Styles inspirés par l'iceberg */
 .turquoise-glow {
   box-shadow: 0 0 20px rgba(1, 135, 124, 0.6);
 }
@@ -79,4 +79,28 @@
   height: 4px;
   background: linear-gradient(90deg, #01877C, #3CAED3, #65CFFF);
   z-index: 1;
+}
+
+/* Effet de vagues pour l'arrière-plan */
+.wave-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.wave-bg::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 150px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%2365CFFF' fill-opacity='0.3' d='M0,256L48,240C96,224,192,192,288,197.3C384,203,480,245,576,245.3C672,245,768,203,864,202.7C960,203,1056,245,1152,261.3C1248,277,1344,267,1392,261.3L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+  background-size: 100% 150px;
+  z-index: -1;
+  animation: wave-animation 20s linear infinite;
+}
+
+@keyframes wave-animation {
+  0% { background-position-x: 0; }
+  100% { background-position-x: 1440px; }
 }
