@@ -3,16 +3,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@/test/test-utils';
 import { LogoutButton } from '@/components/header/LogoutButton';
 import { LogoutConfirmDialog } from '@/components/auth/LogoutConfirmDialog';
-import { useAuthStore } from '@/store/auth';
 
 // Mock de authStore avec une implémentation correcte
 vi.mock('@/store/auth', () => ({
-  useAuthStore: {
-    getState: vi.fn().mockReturnValue({
-      logout: vi.fn().mockResolvedValue(undefined),
-    }),
-    subscribe: vi.fn(),
-  }
+  useAuthStore: () => ({
+    logout: vi.fn().mockResolvedValue(true),
+  })
 }));
 
 // Mock de react-router-dom
@@ -61,7 +57,6 @@ describe('Scénario 2: Déconnexion utilisateur', () => {
   
   it('se déconnecte lorsque l\'utilisateur confirme', async () => {
     const logoutMock = vi.fn().mockResolvedValue(undefined);
-    useAuthStore.getState = vi.fn().mockReturnValue({ logout: logoutMock });
     
     // Rendu direct de la boîte de dialogue ouverte pour tester la confirmation
     render(
