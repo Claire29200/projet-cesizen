@@ -141,8 +141,8 @@ const Login = () => {
             <div className="mt-8 pt-6 border-t border-mental-100">
               <p className="text-xs text-center text-mental-500">
                 <span className="block mb-2">Pour les besoins de démonstration :</span>
-                <span className="font-medium">Admin :</span> admin@santementale.com / admin123<br />
-                <span className="font-medium">Utilisateur :</span> user@santementale.com / user123
+                <span className="font-medium">Admin :</span> claire.simonot@protonmail.com/ user123456<br />
+                <span className="font-medium">Utilisateur :</span> brestoise6@gmail.com / 123456
               </p>
             </div>
           </motion.div>
