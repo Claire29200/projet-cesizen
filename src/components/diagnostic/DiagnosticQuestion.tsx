@@ -1,8 +1,7 @@
-
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
-import { StressQuestion } from "@/store/diagnosticStore";
+import { StressQuestion } from "@/store/diagnostic";
 
 interface DiagnosticQuestionProps {
   question: StressQuestion;

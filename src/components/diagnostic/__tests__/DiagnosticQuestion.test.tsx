@@ -1,8 +1,7 @@
-
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DiagnosticQuestion } from '../DiagnosticQuestion';
-import { StressQuestion } from '@/store/diagnosticStore';
+import { StressQuestion } from '@/store/diagnostic';
 
 // Mock framer-motion to avoid animation issues in tests
 vi.mock('framer-motion', () => ({

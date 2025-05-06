@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/header/Logo";
 import { DesktopNavigation } from "@/components/header/DesktopNavigation";

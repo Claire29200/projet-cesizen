@@ -1,4 +1,3 @@
-
 export interface StressQuestion {
   id: string;
   question: string;
@@ -24,4 +23,16 @@ export interface DiagnosticResult {
   feedbackProvided?: string;
   date: string | Date;
   answers: Record<string, number> | { questionId: string; answer: number }[];
+}
+
+export interface HolmesRaheEvent {
+  id: string;
+  event: string;
+  points: number;
+  category?: string;
+}
+
+export interface HolmesRaheResult extends DiagnosticResult {
+  stressScore: number;
+  riskCategory: 'Faible' | 'Moyen' | 'Élevé';
 }

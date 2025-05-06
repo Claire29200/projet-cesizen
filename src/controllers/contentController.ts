@@ -1,10 +1,10 @@
 
-import { toast } from "@/components/ui/use-toast";
-import { InfoPage, Section } from "@/models/content";
-import { useAuthStore } from "@/store/authStore";
 import { supabase } from "@/integrations/supabase/client";
+import { InfoPage, Section } from "@/models/content";
+import { v4 as uuidv4 } from "uuid";
+import { useAuthStore } from "@/store/auth";
+import { toast } from "@/components/ui/use-toast";
 
-// Fonctions de conversion entre les types de base de données et les modèles
 const convertDbToModelSection = (section: any): Section => {
   return {
     id: section.id,
@@ -25,7 +25,6 @@ const convertModelToDbSection = (section: Section, pageId: string) => {
 };
 
 const convertDbToModelInfoPage = async (page: any): Promise<InfoPage> => {
-  // Récupérer les sections associées à cette page
   const { data: sectionsData, error: sectionsError } = await supabase
     .from('content_sections')
     .select('*')
@@ -52,7 +51,6 @@ const convertDbToModelInfoPage = async (page: any): Promise<InfoPage> => {
 };
 
 export const contentController = {
-  // Récupération de toutes les pages d'information
   async getInfoPages(): Promise<InfoPage[]> {
     try {
       const { data, error } = await supabase
@@ -78,7 +76,6 @@ export const contentController = {
     }
   },
 
-  // Récupération des pages d'information pour un utilisateur spécifique
   async getUserInfoPages(userId?: string): Promise<InfoPage[]> {
     if (!userId) return [];
     
@@ -107,7 +104,6 @@ export const contentController = {
     }
   },
 
-  // Récupération des pages d'information publiques
   async getPublicInfoPages(): Promise<InfoPage[]> {
     try {
       const { data, error } = await supabase
@@ -135,7 +131,6 @@ export const contentController = {
     }
   },
 
-  // Récupération d'une page d'information par son slug
   async getInfoPageBySlug(slug: string): Promise<InfoPage | undefined> {
     try {
       const { data, error } = await supabase
@@ -163,12 +158,10 @@ export const contentController = {
     }
   },
 
-  // Ajout d'une nouvelle page d'information
   async addInfoPage(page: Omit<InfoPage, "id" | "createdAt" | "updatedAt">): Promise<InfoPage> {
     try {
       const user = useAuthStore.getState().user;
       
-      // Insérer la page
       const { data: pageData, error: pageError } = await supabase
         .from('info_pages')
         .insert({
@@ -185,7 +178,6 @@ export const contentController = {
         throw pageError;
       }
 
-      // Insérer les sections
       const sectionsToInsert = page.sections.map((section, index) => ({
         page_id: pageData.id,
         title: section.title,
@@ -215,10 +207,8 @@ export const contentController = {
     }
   },
 
-  // Mise à jour d'une page d'information
   async updateInfoPage(pageId: string, updates: Partial<InfoPage>): Promise<InfoPage> {
     try {
-      // Mise à jour des données de base de la page
       const pageUpdates: any = {};
 
       if (updates.title !== undefined) pageUpdates.title = updates.title;
@@ -238,9 +228,7 @@ export const contentController = {
         throw pageError;
       }
 
-      // Si des sections sont fournies, mettre à jour les sections
       if (updates.sections) {
-        // Supprimer toutes les sections existantes
         const { error: deleteError } = await supabase
           .from('content_sections')
           .delete()
@@ -251,7 +239,6 @@ export const contentController = {
           throw deleteError;
         }
 
-        // Insérer les nouvelles sections
         const sectionsToInsert = updates.sections.map((section, index) => ({
           page_id: pageId,
           title: section.title,
@@ -282,10 +269,8 @@ export const contentController = {
     }
   },
 
-  // Suppression d'une page d'information
   async deleteInfoPage(pageId: string): Promise<boolean> {
     try {
-      // Les sections seront automatiquement supprimées grâce à ON DELETE CASCADE
       const { error } = await supabase
         .from('info_pages')
         .delete()
@@ -308,7 +293,6 @@ export const contentController = {
     }
   },
 
-  // Vérification si l'utilisateur est propriétaire de la page
   async isPageOwner(pageId: string): Promise<boolean> {
     const currentUser = useAuthStore.getState().user;
     if (!currentUser) return false;

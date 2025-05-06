@@ -1,8 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuthStore } from "@/store/authStore";
-import { useDiagnosticStore } from "@/store/diagnosticStore";
+import { useAuthStore } from "@/store/auth";
+import { useDiagnosticStore } from "@/store/diagnostic";
 import { BookOpen } from "lucide-react";
 import { diagnosticController } from "@/controllers/diagnosticController";
 import { useEffect, useState } from "react";

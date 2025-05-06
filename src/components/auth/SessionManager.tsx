@@ -1,73 +1,67 @@
 
-import { useEffect } from "react";
-import { useAuthStore } from "@/store/authStore";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useRef } from 'react';
+import { useAuthStore } from '@/store/auth';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
-const SESSION_TIMEOUT = 7200000; // 2 heures en millisecondes
-const WARNING_TIME = 300000; // 5 minutes avant expiration
-
-export function SessionManager() {
+export const SessionManager = () => {
   const { isAuthenticated, logout } = useAuthStore();
-  const { toast } = useToast();
-  
+  const navigate = useNavigate();
+  const handlingLogout = useRef(false);
+
   useEffect(() => {
-    if (!isAuthenticated) return;
-    
-    // Enregistre le dernier timestamp d'activité
-    let lastActivity = Date.now();
-    
-    // Réinitialise le timer d'activité sur interactions utilisateur
-    const resetTimer = () => {
-      lastActivity = Date.now();
+    // Vérification de session uniquement au montage du composant
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session && isAuthenticated && !handlingLogout.current) {
+        console.log('SessionManager: Session invalide détectée, déconnexion');
+        handlingLogout.current = true;
+        
+        // Utilisation de setTimeout pour éviter les appels bloquants
+        setTimeout(async () => {
+          try {
+            const success = await logout();
+            if (success) {
+              console.log('SessionManager: Déconnexion réussie, redirection');
+              navigate('/', { replace: true });
+            }
+          } finally {
+            handlingLogout.current = false;
+          }
+        }, 10);
+      }
     };
-    
-    // Vérifie périodiquement si la session a expiré
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const timeElapsed = now - lastActivity;
+
+    checkAuth();
+
+    // Configuration du gestionnaire d'événements d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event);
       
-      // Si proche de l'expiration, afficher un avertissement
-      if (timeElapsed > SESSION_TIMEOUT - WARNING_TIME && timeElapsed < SESSION_TIMEOUT) {
-        toast({
-          title: "Attention",
-          description: "Votre session va expirer dans 5 minutes. Souhaitez-vous rester connecté?",
-          action: (
-            <button 
-              onClick={resetTimer}
-              className="bg-cesi-500 text-white px-3 py-1 rounded"
-            >
-              Rester connecté
-            </button>
-          ),
-          duration: 10000,
-        });
+      if (event === 'SIGNED_OUT' && isAuthenticated && !handlingLogout.current) {
+        console.log('User signed out, updating auth state');
+        handlingLogout.current = true;
+        
+        // Utilisation de setTimeout pour éviter les appels bloquants
+        setTimeout(async () => {
+          try {
+            const success = await logout();
+            if (success) {
+              console.log('SessionManager: État de déconnexion mis à jour, redirection');
+              navigate('/', { replace: true });
+            }
+          } finally {
+            handlingLogout.current = false;
+          }
+        }, 10);
       }
-      
-      // Si la session a expiré, déconnecter l'utilisateur
-      if (timeElapsed >= SESSION_TIMEOUT) {
-        toast({
-          title: "Session expirée",
-          description: "Vous avez été déconnecté pour des raisons de sécurité.",
-          variant: "destructive",
-        });
-        logout();
-      }
-    }, 60000); // Vérifie toutes les minutes
-    
-    // Ajoute les écouteurs d'événements pour suivre l'activité
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keypress", resetTimer);
-    window.addEventListener("click", resetTimer);
-    window.addEventListener("scroll", resetTimer);
-    
+    });
+
+    // Nettoyage de l'abonnement
     return () => {
-      clearInterval(interval);
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keypress", resetTimer);
-      window.removeEventListener("click", resetTimer);
-      window.removeEventListener("scroll", resetTimer);
+      subscription.unsubscribe();
     };
-  }, [isAuthenticated, logout, toast]);
-  
-  return null; // Composant sans rendu
-}
+  }, [isAuthenticated, logout, navigate]);
+
+  return null; // Ce composant ne rend rien
+};

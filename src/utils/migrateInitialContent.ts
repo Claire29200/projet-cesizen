@@ -1,6 +1,7 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { useContentStore } from "@/store/contentStore";
+import { useAuthStore } from "@/store/auth";
 
 /**
  * Cette fonction est utilisée pour migrer les données initiales du store vers Supabase
@@ -9,6 +10,13 @@ import { useContentStore } from "@/store/contentStore";
 export const migrateInitialContent = async () => {
   try {
     console.log("Début de la migration des données...");
+    
+    // Vérifier si l'utilisateur est authentifié
+    const { user } = useAuthStore.getState();
+    
+    if (!user) {
+      throw new Error("Vous devez être connecté pour migrer les données");
+    }
     
     // Vérifier d'abord s'il y a déjà des données dans Supabase
     const { data: existingPages, error: checkError } = await supabase
@@ -38,7 +46,7 @@ export const migrateInitialContent = async () => {
         title: page.title,
         slug: page.slug,
         is_published: page.isPublished,
-        user_id: page.userId || null,
+        user_id: null, // Les pages de contenu initial sont considérées comme des pages système
         created_at: new Date(page.createdAt).toISOString(),
         updated_at: new Date(page.updatedAt).toISOString()
       };

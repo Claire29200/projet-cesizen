@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import InformationsList from "./pages/InformationsList";
 import InformationPage from "./pages/InformationPage";
 import DiagnosticPage from "./pages/DiagnosticPage";
+import HolmesRaheScalePage from "./pages/HolmesRaheScalePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
@@ -20,8 +21,17 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFound from "./pages/NotFound";
 import { SessionManager } from "./components/auth/SessionManager";
+import AboutPage from "./pages/AboutPage";
 
-const queryClient = new QueryClient();
+// Création du client pour React Query
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -35,9 +45,11 @@ const App = () => (
           <Route path="/informations" element={<InformationsList />} />
           <Route path="/informations/:slug" element={<InformationPage />} />
           <Route path="/diagnostic" element={<DiagnosticPage />} />
+          <Route path="/diagnostic/holmes-rahe" element={<HolmesRaheScalePage />} />
           <Route path="/connexion" element={<Login />} />
           <Route path="/inscription" element={<Register />} />
           <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
+          <Route path="/a-propos" element={<AboutPage />} />
 
           {/* Protected routes for logged in users */}
           <Route path="/profil" element={

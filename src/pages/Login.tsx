@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore } from "@/store/auth";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
@@ -20,7 +20,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Check if there is a redirect path in the location state
   const from = location.state?.from?.pathname || "/";
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -141,8 +140,8 @@ const Login = () => {
             <div className="mt-8 pt-6 border-t border-mental-100">
               <p className="text-xs text-center text-mental-500">
                 <span className="block mb-2">Pour les besoins de démonstration :</span>
-                <span className="font-medium">Admin :</span> claire.simonot@protonmail.com/ user123456<br />
-                <span className="font-medium">Utilisateur :</span> brestoise6@gmail.com / 123456
+                <span className="font-medium">Admin :</span> claire.simonot@protonmail.com / user123456<br />
+                <span className="font-medium">Utilisateur :</span> brestoise6@gmail.com / admin123456
               </p>
             </div>
           </motion.div>
