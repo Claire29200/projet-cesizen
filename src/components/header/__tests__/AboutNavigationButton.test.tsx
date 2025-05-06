@@ -22,13 +22,13 @@ describe('AboutNavigationButton', () => {
     render(<AboutNavigationButton currentPath="/a-propos" />);
     // On utilise getByText pour obtenir le lien
     const buttonElement = screen.getByText('À propos');
-    expect(buttonElement).not.toHaveClass('bg-transparent');
+    expect(buttonElement).not.toHaveClass('hover:bg-accent');
   });
 
   it('uses ghost variant when not on about page', () => {
     render(<AboutNavigationButton currentPath="/" />);
     // On utilise getByText pour obtenir le lien
     const buttonElement = screen.getByText('À propos');
-    expect(buttonElement).toHaveClass('bg-transparent');
+    expect(buttonElement).toHaveClass('hover:bg-accent');
   });
 });
