@@ -124,3 +124,5 @@ Pour tester rapidement l'application :
 
 - **Admin** : claire.simonot@protonmail.com / user123456
 - **Utilisateur** : brestoise6@gmail.com / 123456
+
+lol
