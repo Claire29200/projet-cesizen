@@ -16,7 +16,7 @@ interface RequestConfig {
  */
 export function addSecurityHeaders(config: RequestConfig): RequestConfig {
   const updatedConfig = { ...config };
-  const headers = { ...config.headers } || {};
+  const headers = config.headers || {};
   
   // Ajouter des en-têtes de sécurité
   headers['X-XSS-Protection'] = '1; mode=block';

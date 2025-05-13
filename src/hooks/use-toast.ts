@@ -2,16 +2,29 @@
 import * as React from "react"
 import { toast as sonnerToast, type ToastT } from "sonner"
 
-export type ToasterToast = ToastT
+export type ToastType = "foreground" | "background"
 
-// Type personnalisé pour faciliter l'utilisation des toasts dans l'application
 export interface ToastProps {
   title?: React.ReactNode
   description?: React.ReactNode
   action?: React.ReactNode
   variant?: "default" | "destructive" | "success" | "warning" | "security"
   duration?: number
+  type?: ToastType
+  open?: boolean
 }
+
+export type ToasterToast = ToastT & {
+  id: string
+  title?: React.ReactNode
+  description?: React.ReactNode
+  action?: React.ReactNode
+  open?: boolean
+  variant?: "default" | "destructive" | "success" | "warning" | "security"
+  type?: ToastType
+}
+
+export type ToasterToastWithId = ToasterToast
 
 const toastTypes = {
   default: {
@@ -39,13 +52,6 @@ const toastTypes = {
 // Liste des toasts actifs pour l'intégration avec toaster.tsx
 const TOAST_LIMIT = 5
 const TOAST_REMOVE_DELAY = 1000
-
-type ToasterToastWithId = ToasterToast & {
-  id: string
-  title?: React.ReactNode
-  description?: React.ReactNode
-  action?: React.ReactNode
-}
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
@@ -175,10 +181,9 @@ function toast(props: ToastProps) {
   const newToast: ToasterToastWithId = {
     id,
     open: true,
-    ...rest,
     title: sanitizedTitle,
     description: sanitizedDescription,
-    variant,
+    type: rest.type || "foreground",
     className: toastType.className,
     duration: rest.duration || toastType.duration,
   }
