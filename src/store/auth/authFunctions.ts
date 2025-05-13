@@ -1,12 +1,61 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, USER_EMAIL } from './types';
 import { createDemoUsers } from './demoUsers';
 import { User } from '@/models/user';
 
+// Nombre maximum de tentatives de connexion autorisées
+const MAX_LOGIN_ATTEMPTS = 5;
+// Durée de restriction en cas de dépassement du nombre de tentatives (30 minutes)
+const LOCKOUT_DURATION = 30 * 60 * 1000;
+
+// Stockage des tentatives de connexion
+const loginAttempts = new Map<string, { count: number, lastAttempt: number }>();
+
+// Vérifier si un utilisateur est verrouillé pour cause de tentatives répétées
+const isUserLocked = (email: string): boolean => {
+  const attempts = loginAttempts.get(email);
+  if (!attempts) return false;
+  
+  // Vérifier si la période de verrouillage est terminée
+  if (attempts.count >= MAX_LOGIN_ATTEMPTS) {
+    const now = Date.now();
+    if (now - attempts.lastAttempt < LOCKOUT_DURATION) {
+      return true;
+    } else {
+      // Réinitialiser le compteur si la période de verrouillage est terminée
+      loginAttempts.delete(email);
+      return false;
+    }
+  }
+  
+  return false;
+};
+
+// Enregistrer une tentative de connexion
+const recordLoginAttempt = (email: string): void => {
+  const attempts = loginAttempts.get(email) || { count: 0, lastAttempt: 0 };
+  loginAttempts.set(email, { 
+    count: attempts.count + 1, 
+    lastAttempt: Date.now() 
+  });
+};
+
+// Réinitialiser les tentatives de connexion après une connexion réussie
+const resetLoginAttempts = (email: string): void => {
+  loginAttempts.delete(email);
+};
+
 export const login = async (email: string, password: string, set: any) => {
   try {
+    // Vérifier si l'utilisateur est verrouillé
+    if (isUserLocked(email)) {
+      const attempts = loginAttempts.get(email)!;
+      const remainingTime = Math.ceil((LOCKOUT_DURATION - (Date.now() - attempts.lastAttempt)) / 60000);
+      toast.error(`Compte temporairement verrouillé. Réessayez dans ${remainingTime} minutes.`);
+      return false;
+    }
+    
     // Tentative de création des utilisateurs de démonstration si nécessaire
     const isAdminDemo = (email === ADMIN_EMAIL && password === ADMIN_PASSWORD);
     
@@ -26,13 +75,25 @@ export const login = async (email: string, password: string, set: any) => {
     
     if (error) {
       console.error('Erreur de connexion:', error.message);
-      toast.error(error.message === 'Invalid login credentials' 
-        ? 'Identifiants invalides. Vérifiez votre email et mot de passe.' 
-        : error.message);
+      
+      // Enregistrer la tentative échouée
+      recordLoginAttempt(email);
+      
+      // Vérifier si l'utilisateur atteint le nombre max de tentatives après cet échec
+      if (loginAttempts.get(email)?.count === MAX_LOGIN_ATTEMPTS) {
+        toast.error(`Nombre maximum de tentatives atteint. Compte verrouillé temporairement.`);
+        return false;
+      }
+      
+      // Message générique pour ne pas donner d'information sur la validité de l'email
+      toast.error('Identifiants invalides. Veuillez vérifier vos informations.');
       return false;
     }
     
-    // Récupération du profil utilisateur
+    // Réinitialiser les tentatives en cas de connexion réussie
+    resetLoginAttempts(email);
+    
+    // Récupération sécurisée du profil utilisateur
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('*')
@@ -124,6 +185,16 @@ export const logout = async (set: any) => {
       toast.error(error.message || 'Une erreur est survenue lors de la déconnexion');
       return false;
     }
+    
+    // Supprimer toutes les données sensibles du localStorage
+    const keysToRemove = ['auth-token', 'auth-refresh-token', 'user-session'];
+    keysToRemove.forEach(key => {
+      try {
+        localStorage.removeItem(key);
+      } catch (e) {
+        console.error(`Erreur lors de la suppression de ${key}:`, e);
+      }
+    });
     
     console.log('Déconnexion Supabase réussie');
     toast.success('Déconnexion réussie');

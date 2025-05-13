@@ -45,6 +45,17 @@ const Login = () => {
     }
   };
   
+  // Fonction pour pré-remplir les identifiants de démo (une façon plus sécurisée)
+  const fillDemoCredentials = (type: 'admin' | 'user') => {
+    if (type === 'admin') {
+      setEmail("claire.simonot@protonmail.com");
+      setPassword("user123456");
+    } else {
+      setEmail("brestoise6@gmail.com");
+      setPassword("123456");
+    }
+  };
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -138,11 +149,25 @@ const Login = () => {
             </form>
             
             <div className="mt-8 pt-6 border-t border-mental-100">
-              <p className="text-xs text-center text-mental-500">
-                <span className="block mb-2">Pour les besoins de démonstration :</span>
-                <span className="font-medium">Admin :</span> claire.simonot@protonmail.com / user123456<br />
-                <span className="font-medium">Utilisateur :</span> brestoise6@gmail.com /123456
+              <p className="text-xs text-center text-mental-500 mb-2">
+                Pour les besoins de démonstration:
               </p>
+              <div className="flex justify-center space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => fillDemoCredentials('admin')}
+                >
+                  Compte Admin
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => fillDemoCredentials('user')}
+                >
+                  Compte Utilisateur
+                </Button>
+              </div>
             </div>
           </motion.div>
         </div>
