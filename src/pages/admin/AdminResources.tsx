@@ -3,38 +3,25 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ResourceCard } from "@/components/resources/ResourceCard";
-import { ResourceForm } from "@/components/resources/ResourceForm";
+import { Card, CardContent } from "@/components/ui/card";
 import { Resource } from "@/models/resource";
 import { resourceController } from "@/controllers/resourceController";
 import { useToast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
-import { Search, Plus, Filter } from "lucide-react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+  ResourceHeader,
+  ResourceSearch,
+  ResourceGrid,
+  DeleteResourceDialog,
+  AddResourceDialog
+} from "@/components/admin/resources";
+import { ResourceForm } from "@/components/resources/ResourceForm";
 
 const AdminResources = () => {
   const [resources, setResources] = useState<Resource[]>(resourceController.getActiveResources());
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isAddResourceDialogOpen, setIsAddResourceDialogOpen] = useState(false);
-  const [isEditResourceDialogOpen, setIsEditResourceDialogOpen] = useState(false);
   const [isDeleteResourceDialogOpen, setIsDeleteResourceDialogOpen] = useState(false);
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "edit">("list");
@@ -117,6 +104,24 @@ const AdminResources = () => {
       setSelectedResource(null);
     }
   };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value || null);
+  };
+
+  const handleEditResource = (resource: Resource) => {
+    setSelectedResource(resource);
+    setViewMode("edit");
+  };
+
+  const handleDeleteClick = (resource: Resource) => {
+    setSelectedResource(resource);
+    setIsDeleteResourceDialogOpen(true);
+  };
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -135,77 +140,23 @@ const AdminResources = () => {
               >
                 {viewMode === "list" ? (
                   <>
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-                      <div>
-                        <h1 className="text-3xl font-bold text-mental-800 mb-2">
-                          Gestion des ressources
-                        </h1>
-                        <p className="text-mental-600">
-                          Gérez les ressources et activités proposées aux utilisateurs
-                        </p>
-                      </div>
-                      <Button
-                        className="mt-4 sm:mt-0"
-                        onClick={() => setIsAddResourceDialogOpen(true)}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Ajouter une ressource
-                      </Button>
-                    </div>
+                    <ResourceHeader onAddResource={() => setIsAddResourceDialogOpen(true)} />
                     
                     <Card className="mb-6">
                       <CardContent className="pt-6">
-                        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                          <div className="relative flex-grow">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-mental-400 h-5 w-5" />
-                            <Input
-                              type="text"
-                              placeholder="Rechercher une ressource..."
-                              className="pl-10"
-                              value={searchQuery}
-                              onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                          </div>
-                          <div className="flex-shrink-0 flex items-center">
-                            <Filter className="h-5 w-5 text-mental-500 mr-2" />
-                            <select
-                              className="border rounded py-2 px-3 bg-white"
-                              value={selectedCategory || ""}
-                              onChange={(e) => setSelectedCategory(e.target.value || null)}
-                            >
-                              <option value="">Toutes catégories</option>
-                              {categories.map((category) => (
-                                <option key={category.id} value={category.name}>
-                                  {category.name}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
+                        <ResourceSearch 
+                          searchQuery={searchQuery}
+                          onSearchChange={handleSearchChange}
+                          selectedCategory={selectedCategory}
+                          onCategoryChange={handleCategoryChange}
+                          categories={categories}
+                        />
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {filteredResources.length > 0 ? (
-                            filteredResources.map((resource) => (
-                              <ResourceCard
-                                key={resource.id}
-                                resource={resource}
-                                isAdmin={true}
-                                onEdit={(resource) => {
-                                  setSelectedResource(resource);
-                                  setViewMode("edit");
-                                }}
-                                onDelete={(resource) => {
-                                  setSelectedResource(resource);
-                                  setIsDeleteResourceDialogOpen(true);
-                                }}
-                              />
-                            ))
-                          ) : (
-                            <div className="col-span-full py-8 text-center">
-                              <p className="text-mental-500">Aucune ressource trouvée</p>
-                            </div>
-                          )}
-                        </div>
+                        <ResourceGrid 
+                          resources={filteredResources}
+                          onEdit={handleEditResource}
+                          onDelete={handleDeleteClick}
+                        />
                       </CardContent>
                     </Card>
                   </>
@@ -215,12 +166,15 @@ const AdminResources = () => {
                       <h2 className="text-2xl font-bold text-mental-800">
                         {selectedResource ? "Modifier la ressource" : "Nouvelle ressource"}
                       </h2>
-                      <Button variant="outline" onClick={() => {
-                        setViewMode("list");
-                        setSelectedResource(null);
-                      }}>
+                      <button
+                        className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                        onClick={() => {
+                          setViewMode("list");
+                          setSelectedResource(null);
+                        }}
+                      >
                         Retour à la liste
-                      </Button>
+                      </button>
                     </div>
                     
                     <ResourceForm
@@ -242,53 +196,19 @@ const AdminResources = () => {
       <Footer />
       
       {/* Add Resource Dialog */}
-      <Dialog open={isAddResourceDialogOpen} onOpenChange={setIsAddResourceDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Ajouter une ressource</DialogTitle>
-            <DialogDescription>
-              Créez une nouvelle ressource à mettre à disposition des utilisateurs.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="py-4">
-            <ResourceForm
-              onSubmit={handleAddResource}
-              onCancel={() => setIsAddResourceDialogOpen(false)}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AddResourceDialog
+        open={isAddResourceDialogOpen}
+        onOpenChange={setIsAddResourceDialogOpen}
+        onSubmit={handleAddResource}
+      />
       
       {/* Delete Resource Dialog */}
-      <Dialog open={isDeleteResourceDialogOpen} onOpenChange={setIsDeleteResourceDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Supprimer la ressource</DialogTitle>
-            <DialogDescription>
-              Êtes-vous sûr de vouloir supprimer cette ressource ? Cette action est irréversible.
-            </DialogDescription>
-          </DialogHeader>
-          
-          {selectedResource && (
-            <div className="py-4">
-              <p className="text-mental-800">
-                Vous êtes sur le point de supprimer la ressource{" "}
-                <span className="font-medium">{selectedResource.title}</span>.
-              </p>
-            </div>
-          )}
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteResourceDialogOpen(false)}>
-              Annuler
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteResource}>
-              Supprimer
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteResourceDialog
+        resource={selectedResource}
+        open={isDeleteResourceDialogOpen}
+        onOpenChange={setIsDeleteResourceDialogOpen}
+        onConfirm={handleDeleteResource}
+      />
     </div>
   );
 };
