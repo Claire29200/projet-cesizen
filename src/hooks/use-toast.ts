@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { toast as sonnerToast, type ToastT } from "sonner"
 
@@ -14,7 +13,7 @@ export interface ToastProps {
   open?: boolean
 }
 
-export type ToasterToast = ToastT & {
+export type ToasterToast = {
   id: string
   title?: React.ReactNode
   description?: React.ReactNode
@@ -22,6 +21,8 @@ export type ToasterToast = ToastT & {
   open?: boolean
   variant?: "default" | "destructive" | "success" | "warning" | "security"
   type?: ToastType
+  className?: string
+  duration?: number
 }
 
 export type ToasterToastWithId = ToasterToast
@@ -184,6 +185,7 @@ function toast(props: ToastProps) {
     title: sanitizedTitle,
     description: sanitizedDescription,
     type: rest.type || "foreground",
+    variant: variant,
     className: toastType.className,
     duration: rest.duration || toastType.duration,
   }
@@ -191,7 +193,7 @@ function toast(props: ToastProps) {
   dispatch({ type: actionTypes.ADD_TOAST, toast: newToast })
   
   // Utilisation en parallèle de sonner pour la compatibilité
-  return sonnerToast(sanitizedTitle, {
+  return sonnerToast(sanitizedTitle as string, {
     description: sanitizedDescription,
     className: toastType.className,
     duration: rest.duration || toastType.duration,
