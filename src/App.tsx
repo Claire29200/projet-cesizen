@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminInformations from "./pages/admin/AdminInformations";
 import AdminDiagnostics from "./pages/admin/AdminDiagnostics";
+import AdminResources from "./pages/admin/AdminResources";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -84,6 +85,11 @@ const App = () => (
           <Route path="/admin/diagnostics" element={
             <ProtectedRoute adminOnly>
               <AdminDiagnostics />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/ressources" element={
+            <ProtectedRoute adminOnly>
+              <AdminResources />
             </ProtectedRoute>
           } />
 

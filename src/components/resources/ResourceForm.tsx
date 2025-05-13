@@ -5,231 +5,176 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { InfoPage, Section } from "@/models/content";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Resource, ResourceCategory } from "@/models/resource";
+import { resourceController } from "@/controllers/resourceController";
+import { useToast } from "@/components/ui/use-toast";
+import { Clock } from "lucide-react";
 
 interface ResourceFormProps {
-  resource?: InfoPage;
-  onSubmit: (resourceData: any) => void;
+  resource?: Resource;
+  onSubmit: (resourceData: Partial<Resource>) => void;
   onCancel: () => void;
 }
 
 export const ResourceForm = ({ resource, onSubmit, onCancel }: ResourceFormProps) => {
-  const [formData, setFormData] = useState({
+  const { toast } = useToast();
+  const categories = resourceController.getResourceCategories();
+  
+  const [formData, setFormData] = useState<Partial<Resource>>({
     title: "",
-    slug: "",
-    isPublished: true,
-    sections: [{ title: "", content: "", id: "", updatedAt: new Date() as Date | string }]
+    description: "",
+    content: "",
+    category: categories[0]?.name || "",
+    duration: 10,
+    isActive: true,
   });
   
   useEffect(() => {
     if (resource) {
       setFormData({
         title: resource.title,
-        slug: resource.slug,
-        isPublished: resource.isPublished,
-        sections: resource.sections.map(s => ({
-          title: s.title,
-          content: s.content,
-          id: s.id,
-          updatedAt: s.updatedAt
-        }))
+        description: resource.description,
+        content: resource.content || "",
+        category: resource.category,
+        duration: resource.duration || 10,
+        isActive: resource.isActive
       });
     }
   }, [resource]);
   
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/\s+/g, "-");
-  };
-  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
-    if (name === "title" && !resource) {
-      setFormData({
-        ...formData,
-        title: value,
-        slug: generateSlug(value)
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+    setFormData({ ...formData, [name]: value });
   };
   
-  const handlePublishedChange = (checked: boolean) => {
-    setFormData({
-      ...formData,
-      isPublished: checked
-    });
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: parseInt(value) || 0 });
   };
   
-  const handleSectionChange = (index: number, field: "title" | "content", value: string) => {
-    const updatedSections = [...formData.sections];
-    updatedSections[index] = {
-      ...updatedSections[index],
-      [field]: value,
-      updatedAt: new Date() as Date | string
-    };
-    
-    setFormData({
-      ...formData,
-      sections: updatedSections
-    });
+  const handleCategoryChange = (value: string) => {
+    setFormData({ ...formData, category: value });
   };
   
-  const handleAddSection = () => {
-    setFormData({
-      ...formData,
-      sections: [...formData.sections, { 
-        title: "", 
-        content: "",
-        id: Math.random().toString(36).substr(2, 9),
-        updatedAt: new Date() as Date | string
-      }]
-    });
-  };
-  
-  const handleRemoveSection = (index: number) => {
-    if (formData.sections.length <= 1) return;
-    
-    const updatedSections = [...formData.sections];
-    updatedSections.splice(index, 1);
-    
-    setFormData({
-      ...formData,
-      sections: updatedSections
-    });
+  const handleActiveChange = (checked: boolean) => {
+    setFormData({ ...formData, isActive: checked });
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const preparedData = {
-      ...formData,
-      sections: formData.sections.map(section => ({
-        ...section,
-        id: section.id || Math.random().toString(36).substr(2, 9),
-        updatedAt: section.updatedAt || new Date() as Date | string
-      }))
-    };
-    onSubmit(preparedData);
+    
+    if (!formData.title || !formData.description || !formData.category) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs obligatoires.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    onSubmit(formData);
   };
   
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="title">Titre</Label>
-          <Input
-            id="title"
-            name="title"
-            placeholder="Titre de votre ressource"
-            value={formData.title}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="slug">
-            Slug{" "}
-            <span className="text-xs text-mental-500">
-              (utilisé dans l'URL)
-            </span>
-          </Label>
-          <Input
-            id="slug"
-            name="slug"
-            placeholder="slug-de-votre-ressource"
-            value={formData.slug}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-      </div>
-      
-      <div className="flex items-center space-x-2">
-        <Switch
-          id="published"
-          checked={formData.isPublished}
-          onCheckedChange={handlePublishedChange}
-        />
-        <Label htmlFor="published">Publier cette ressource</Label>
-      </div>
-      
-      <div className="pt-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-mental-800">
-            Sections
-          </h2>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleAddSection}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter une section
-          </Button>
-        </div>
-        
-        {formData.sections.map((section, index) => (
-          <Card key={index} className="mb-6">
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-center">
-                <CardTitle>Section {index + 1}</CardTitle>
-                {formData.sections.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="text-red-500 hover:text-red-600"
-                    onClick={() => handleRemoveSection(index)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor={`section-${index}-title`}>
-                  Titre de la section
-                </Label>
-                <Input
-                  id={`section-${index}-title`}
-                  placeholder="Titre de la section"
-                  value={section.title}
-                  onChange={(e) => handleSectionChange(index, "title", e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor={`section-${index}-content`}>
-                  Contenu de la section
-                </Label>
-                <Textarea
-                  id={`section-${index}-content`}
-                  rows={6}
-                  placeholder="Contenu de la section..."
-                  value={section.content}
-                  onChange={(e) => handleSectionChange(index, "content", e.target.value)}
-                  required
-                />
-                <p className="text-xs text-mental-500">
-                  Utilisez deux sauts de ligne pour les paragraphes. Entourez le texte de ** pour le mettre en gras.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Informations générales</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="title">Titre *</Label>
+            <Input
+              id="title"
+              name="title"
+              placeholder="Titre de la ressource"
+              value={formData.title}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="category">Catégorie *</Label>
+            <Select 
+              value={formData.category} 
+              onValueChange={handleCategoryChange}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Sélectionnez une catégorie" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.name}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="duration">Durée (minutes)</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="duration"
+                name="duration"
+                type="number"
+                min={1}
+                max={120}
+                value={formData.duration}
+                onChange={handleNumberChange}
+              />
+              <Clock className="h-5 w-5 text-mental-400" />
+            </div>
+            <p className="text-xs text-mental-500">
+              Durée estimée pour cette activité (en minutes)
+            </p>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="description">Description courte *</Label>
+            <Textarea
+              id="description"
+              name="description"
+              placeholder="Brève description de la ressource"
+              rows={3}
+              value={formData.description}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="content">Contenu détaillé</Label>
+            <Textarea
+              id="content"
+              name="content"
+              placeholder="Instructions détaillées, conseils et informations supplémentaires..."
+              rows={6}
+              value={formData.content}
+              onChange={handleInputChange}
+            />
+            <p className="text-xs text-mental-500">
+              Vous pouvez utiliser du texte simple ou du Markdown pour le formatage
+            </p>
+          </div>
+          
+          <div className="flex items-center space-x-2 pt-4">
+            <Switch
+              id="active"
+              checked={formData.isActive}
+              onCheckedChange={handleActiveChange}
+            />
+            <Label htmlFor="active">Activer cette ressource</Label>
+            <p className="text-xs text-mental-500 ml-2">
+              (Les ressources inactives ne sont pas visibles par les utilisateurs)
+            </p>
+          </div>
+        </CardContent>
+      </Card>
       
       <div className="pt-4 flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>
