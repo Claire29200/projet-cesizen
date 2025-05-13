@@ -23,6 +23,7 @@ export function addSecurityHeaders(config: RequestConfig): RequestConfig {
   headers['X-Content-Type-Options'] = 'nosniff';
   headers['X-Frame-Options'] = 'DENY';
   headers['Referrer-Policy'] = 'strict-origin-when-cross-origin';
+  headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=()';
   
   // Ajouter un jeton CSRF si disponible
   const csrfToken = getCsrfToken();
@@ -79,9 +80,61 @@ export function validateUrlOrigin(url: string): boolean {
     const urlObject = new URL(url);
     const origin = urlObject.origin;
     
-    return allowedOrigins.includes(origin);
+    // Correction pour éviter l'erreur TS2872 - utilisation de Boolean explicite
+    return Boolean(allowedOrigins.includes(origin));
   } catch (error) {
     console.error('URL invalide:', error);
     return false;
   }
+}
+
+/**
+ * Valide les paramètres de requête pour éviter les injections
+ * @param params Paramètres à valider
+ * @returns Paramètres sanitisés
+ */
+export function sanitizeRequestParams(params: Record<string, any>): Record<string, any> {
+  const sanitized: Record<string, any> = {};
+  
+  for (const key in params) {
+    if (Object.prototype.hasOwnProperty.call(params, key)) {
+      const value = params[key];
+      
+      if (typeof value === 'string') {
+        // Sanitiser les chaînes de caractères
+        sanitized[key] = value
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#x27;')
+          .replace(/\//g, '&#x2F;');
+      } else {
+        // Copier les valeurs non-chaînes telles quelles
+        sanitized[key] = value;
+      }
+    }
+  }
+  
+  return sanitized;
+}
+
+/**
+ * Détecte les tentatives d'injection SQL dans les chaînes
+ * @param input Chaîne à vérifier
+ * @returns True si la chaîne contient des motifs suspects
+ */
+export function detectSqlInjection(input: string): boolean {
+  if (!input) return false;
+  
+  const sqlPatterns = [
+    /'\s*OR\s*'1'\s*=\s*'1/i,
+    /'\s*OR\s*1\s*=\s*1/i,
+    /'\s*;\s*DROP\s+TABLE/i,
+    /'\s*;\s*SELECT\s+/i,
+    /'\s*UNION\s+SELECT/i,
+    /'\s*--\s+/i,
+    /'\s*;\s*--\s+/i
+  ];
+  
+  return sqlPatterns.some(pattern => pattern.test(input));
 }
