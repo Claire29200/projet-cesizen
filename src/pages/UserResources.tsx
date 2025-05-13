@@ -34,7 +34,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { ResourceForm } from "@/components/resources/ResourceForm";
+import { InfoPageResourceAdapter } from "@/components/resources/InfoPageResourceAdapter";
 
 const UserResources = () => {
   const { user } = useAuthStore();
@@ -71,12 +71,7 @@ const UserResources = () => {
     fetchUserResources();
   }, [user]);
   
-  const handleAddResource = async (resourceData: {
-    title: string;
-    slug: string;
-    isPublished: boolean;
-    sections: Section[];
-  }) => {
+  const handleAddResource = async (resourceData: InfoPage) => {
     if (!user) {
       toast({
         title: "Erreur",
@@ -292,7 +287,7 @@ const UserResources = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <ResourceForm
+          <InfoPageResourceAdapter
             onSubmit={handleAddResource}
             onCancel={() => setIsAddDialogOpen(false)}
           />
@@ -309,8 +304,8 @@ const UserResources = () => {
           </DialogHeader>
           
           {selectedResource && (
-            <ResourceForm
-              resource={selectedResource}
+            <InfoPageResourceAdapter
+              infoPage={selectedResource}
               onSubmit={handleUpdateResource}
               onCancel={() => {
                 setIsEditDialogOpen(false);
