@@ -19,6 +19,7 @@ import AdminInformations from "./pages/admin/AdminInformations";
 import AdminDiagnostics from "./pages/admin/AdminDiagnostics";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import { SessionManager } from "./components/auth/SessionManager";
 import AboutPage from "./pages/AboutPage";
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/connexion" element={<Login />} />
           <Route path="/inscription" element={<Register />} />
           <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
+          <Route path="/nouveau-mot-de-passe" element={<ResetPassword />} />
           <Route path="/a-propos" element={<AboutPage />} />
 
           {/* Protected routes for logged in users */}
