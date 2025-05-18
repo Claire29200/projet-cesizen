@@ -53,7 +53,7 @@ export function mockReactRouter(mockNavigate) {
     return {
       ...actual,
       useNavigate: () => mockNavigate,
-      Navigate: ({ to }) => <div>Redirecting to {to}</div>
+      Navigate: (props) => <div>Redirecting to {props.to}</div>
     };
   });
 }
