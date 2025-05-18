@@ -3,6 +3,7 @@ import { vi } from 'vitest';
 import { supabase } from '@/integrations/supabase/client';
 import { authController } from '@/controllers/authController';
 import { toast } from 'sonner';
+import React from 'react';
 
 /**
  * Configure les mocks pour les tests d'authentification
@@ -53,6 +54,7 @@ export function mockReactRouter(mockNavigate) {
     return {
       ...actual,
       useNavigate: () => mockNavigate,
+      useLocation: () => ({ pathname: '/test', state: { from: { pathname: '/' } } }),
       Navigate: (props) => {
         return React.createElement('div', { 'data-testid': 'navigate' }, `Redirecting to ${props.to}`);
       }

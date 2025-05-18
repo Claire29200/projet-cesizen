@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuthStore } from '@/store/auth';
 import { authController } from '@/controllers/authController';
-import { MemoryRouter } from 'react-router-dom';
+import React from 'react';
 
 // Mock des dépendances
 vi.mock('@/store/auth', () => ({
@@ -27,12 +27,11 @@ vi.mock('@/components/ui/use-toast', () => ({
   toast: vi.fn()
 }));
 
-// Mock pour Navigate
+// Mock pour React Router
 vi.mock('react-router-dom', () => {
-  const actual = vi.importActual('react-router-dom');
   return {
-    ...actual,
     useNavigate: () => vi.fn(),
+    useLocation: () => ({ pathname: '/test', state: { from: { pathname: '/' } } }),
     Navigate: ({ to }) => <div data-testid="navigate">Redirecting to {to}</div>,
     MemoryRouter: ({ children }) => <div data-testid="memory-router">{children}</div>
   };

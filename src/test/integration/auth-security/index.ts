@@ -1,6 +1,5 @@
 
-// Export all auth security tests for easier importing
-export * from './LoginAttemptsTests.test';
-export * from './SessionValidationTests.test';
-export * from './AdminAccessTests.test';
-export * from './LogoutSecurityTests.test';
+// This file exports auth security test modules
+// We're removing the references to non-existent test files
+
+export {};

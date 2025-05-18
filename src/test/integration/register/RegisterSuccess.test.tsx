@@ -1,5 +1,5 @@
 
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 /**
  * Placeholder for register success tests
