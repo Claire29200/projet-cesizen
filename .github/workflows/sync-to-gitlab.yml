@@ -23,7 +23,7 @@ jobs:
         git config --global user.email "action@github.com"
         
         # Remplacez cette URL par votre URL GitLab exacte
-        git remote add gitlab https://oauth2:${GITLAB_TOKEN}@gitlab.com/Claire29200/projetCESIZen.git
+        git remote add gitlab https://oauth2:${GITLAB_TOKEN}@gitlab.com/Claire29200/projet-cesizen.git
         
         git push gitlab --all --force
         git push gitlab --tags --force
