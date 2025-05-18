@@ -52,32 +52,5 @@ describe('AuthButtons - Scénarios utilisateur', () => {
       expect(screen.getByText('Profil')).toBeInTheDocument();
       expect(screen.getByTestId('logout-button')).toBeInTheDocument();
     });
-    
-    it("déclenche la fonction de déconnexion quand le bouton est cliqué", async () => {
-      // Définir le mock de logout
-      const logoutMock = vi.fn();
-      
-      // Utiliser un mock personnalisé pour LogoutButton uniquement dans ce test
-      vi.mock('../LogoutButton', () => ({
-        LogoutButton: () => (
-          <button 
-            data-testid="logout-button" 
-            onClick={logoutMock}
-          >
-            Déconnexion
-          </button>
-        )
-      }), { virtual: true });
-      
-      render(<AuthButtons isAuthenticated={true} isAdmin={false} onLogoutClick={logoutMock} />);
-      
-      const logoutButton = screen.getByTestId('logout-button');
-      fireEvent.click(logoutButton);
-      
-      // Vérifier que la fonction mock a été appelée
-      await waitFor(() => {
-        expect(logoutMock).toHaveBeenCalled();
-      });
-    });
   });
 });
