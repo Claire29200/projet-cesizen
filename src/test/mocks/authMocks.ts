@@ -48,7 +48,7 @@ export function setupToastMocks() {
  * Mock pour react-router-dom
  */
 export function mockReactRouter(mockNavigate) {
-  return vi.mock('react-router-dom', async () => {
+  vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
     return {
       ...actual,
