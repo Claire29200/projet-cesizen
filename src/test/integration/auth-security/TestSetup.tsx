@@ -54,19 +54,17 @@ export function setupAuthSecurityMocks() {
     }
   }));
 
-  // Reset all mocks before each test
-  beforeEach(() => {
-    vi.resetAllMocks();
+  // Default mock implementations - we moved this inside the function since beforeEach isn't available here
+  vi.resetAllMocks();
     
-    // Default mock implementations
-    (authController.validateSession as any).mockResolvedValue({ valid: true, session: { user: { id: 'test-user-id' } } });
-    (authController.isUserLocked as any).mockReturnValue(false);
-    (useAuthStore as any).mockReturnValue({
-      isAuthenticated: false,
-      login: vi.fn().mockResolvedValue(true),
-      logout: vi.fn().mockResolvedValue(true),
-      user: null
-    });
+  // Default mock implementations
+  (authController.validateSession as any).mockResolvedValue({ valid: true, session: { user: { id: 'test-user-id' } } });
+  (authController.isUserLocked as any).mockReturnValue(false);
+  (useAuthStore as any).mockReturnValue({
+    isAuthenticated: false,
+    login: vi.fn().mockResolvedValue(true),
+    logout: vi.fn().mockResolvedValue(true),
+    user: null
   });
 
   // Mock for React Router
