@@ -29,6 +29,9 @@ describe('Security Detection Tests', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     
+    // Définir mockNavigate
+    const mockNavigate = vi.fn();
+    
     // Configuration par défaut pour les sécurités
     (securityService.detectFraming as any).mockReturnValue(false);
     (securityService.validateOrigin as any).mockReturnValue(true);
@@ -40,6 +43,16 @@ describe('Security Detection Tests', () => {
       isAdmin: false,
       user: { id: 'user-1', email: 'user@example.com' },
       logout: vi.fn()
+    });
+    
+    // Met à jour le mock de react-router-dom
+    vi.mock('react-router-dom', async () => {
+      const actual = await vi.importActual('react-router-dom');
+      return {
+        ...actual as any,
+        useNavigate: () => mockNavigate,
+        useLocation: () => ({ pathname: '/profile' })
+      };
     });
   });
   
@@ -58,7 +71,7 @@ describe('Security Detection Tests', () => {
       </MemoryRouter>
     );
     
-    // Force the function to be called in test environment
+    // Appeler manuellement la fonction pour le test
     securityService.detectFraming();
     
     // Vérifie que la fonction de détection de framing a été appelée
@@ -80,7 +93,7 @@ describe('Security Detection Tests', () => {
       </MemoryRouter>
     );
     
-    // Force the function to be called in test environment
+    // Appeler manuellement la fonction pour le test
     securityService.validateOrigin();
     
     // Vérifie que la fonction de validation d'origine a été appelée

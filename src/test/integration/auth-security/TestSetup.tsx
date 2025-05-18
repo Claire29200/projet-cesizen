@@ -54,7 +54,7 @@ export function setupAuthSecurityMocks() {
     }
   }));
 
-  // Default mock implementations - we moved this inside the function since beforeEach isn't available here
+  // Default mock implementations - moved into the function
   vi.resetAllMocks();
     
   // Default mock implementations

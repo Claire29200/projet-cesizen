@@ -11,6 +11,7 @@ setupAuthSecurityMocks();
 describe('Logout Security Tests', () => {
   beforeEach(() => {
     // Additional setup specific to logout tests
+    vi.resetAllMocks();
   });
   
   it('should properly clean up session during logout', async () => {

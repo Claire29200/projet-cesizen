@@ -12,6 +12,7 @@ setupAuthSecurityMocks();
 describe('Admin Access Security Tests', () => {
   beforeEach(() => {
     // Additional setup specific to admin access tests
+    vi.resetAllMocks();
   });
   
   it('should prevent access to admin resources for non-admin users', async () => {

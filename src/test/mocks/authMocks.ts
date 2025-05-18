@@ -41,14 +41,13 @@ export function setupAuthMocks() {
  */
 export function setupToastMocks() {
   // Reset des mocks de toast
-  vi.mocked(toast.error).mockReset();
-  vi.mocked(toast.success).mockReset();
+  vi.resetAllMocks();
 }
 
 /**
  * Mock pour react-router-dom
  */
-export function mockReactRouter(mockNavigate: ReturnType<typeof vi.fn>) {
+export function mockReactRouter(mockNavigate) {
   return vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
     return {

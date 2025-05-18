@@ -13,6 +13,7 @@ setupAuthSecurityMocks();
 describe('Session Validation Security Tests', () => {
   beforeEach(() => {
     // Additional setup specific to session validation tests
+    vi.resetAllMocks();
   });
   
   it('should verify session validity for protected routes', async () => {

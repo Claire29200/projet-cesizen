@@ -15,10 +15,11 @@ vi.mock('@/store/auth', () => ({
 setupSecurityTestMocks();
 
 describe('Protected Route Security Tests', () => {
-  const mockNavigate = vi.fn();
-  
   beforeEach(() => {
     vi.resetAllMocks();
+    
+    // Définir mockNavigate à l'intérieur de beforeEach pour le rendre disponible dans la portée
+    const mockNavigate = vi.fn();
     
     // Met à jour le mock de react-router-dom
     vi.mock('react-router-dom', async () => {
