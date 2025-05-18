@@ -32,8 +32,7 @@ vi.mock('react-router-dom', () => {
   return {
     useNavigate: () => vi.fn(),
     useLocation: () => ({ pathname: '/test', state: { from: { pathname: '/' } } }),
-    Navigate: ({ to }) => <div data-testid="navigate">Redirecting to {to}</div>,
-    MemoryRouter: ({ children }) => <div data-testid="memory-router">{children}</div>
+    Navigate: ({ to }) => <div data-testid="navigate">Redirecting to {to}</div>
   };
 });
 
@@ -58,11 +57,11 @@ describe('ProtectedRoute Component', () => {
 
     // Action
     render(
-      <MemoryRouter>
+      <div data-testid="memory-router">
         <ProtectedRoute>
           <div data-testid="protected-content">Protected Content</div>
         </ProtectedRoute>
-      </MemoryRouter>
+      </div>
     );
 
     // Assertion
@@ -80,11 +79,11 @@ describe('ProtectedRoute Component', () => {
 
     // Action
     render(
-      <MemoryRouter>
+      <div data-testid="memory-router">
         <ProtectedRoute>
           <div>Protected Content</div>
         </ProtectedRoute>
-      </MemoryRouter>
+      </div>
     );
 
     // Assertion - should see navigation component
