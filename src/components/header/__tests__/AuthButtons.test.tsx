@@ -57,18 +57,7 @@ describe('AuthButtons - Scénarios utilisateur', () => {
       // Définir le mock de logout ici
       const logoutMock = vi.fn();
       
-      // Utiliser un mock personnalisé pour LogoutButton uniquement dans ce test
-      vi.mock('../LogoutButton', () => ({
-        LogoutButton: () => (
-          <button 
-            data-testid="logout-button" 
-            onClick={logoutMock}
-          >
-            Déconnexion
-          </button>
-        )
-      }), { virtual: true });
-      
+      // Corriger l'erreur ici - render attend seulement 1 ou 2 arguments, mais nous en passions 3
       render(<AuthButtons isAuthenticated={true} isAdmin={false} onLogoutClick={logoutMock} />);
       
       const logoutButton = screen.getByTestId('logout-button');
