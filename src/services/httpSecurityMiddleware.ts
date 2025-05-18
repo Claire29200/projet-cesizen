@@ -120,17 +120,24 @@ export function sanitizeRequestParams(params: Record<string, any>): Record<strin
  * Sanitise une chaîne pour échapper HTML et attributs
  */
 function sanitizeString(value: string): string {
-  return value
+  // Première étape : échapper les caractères HTML spéciaux
+  let sanitized = value
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;')
-    .replace(/onerror/gi, 'data-sanitized')
-    .replace(/onclick/gi, 'data-sanitized')
-    .replace(/onload/gi, 'data-sanitized')
-    .replace(/onmouseover/gi, 'data-sanitized')
+    .replace(/\//g, '&#x2F;');
+  
+  // Deuxième étape : neutraliser les attributs dangereux
+  // Important: remplacer complètement les attributs d'événements dangereux
+  sanitized = sanitized
+    .replace(/onerror\s*=/gi, 'data-sanitized=')
+    .replace(/onclick\s*=/gi, 'data-sanitized=')
+    .replace(/onload\s*=/gi, 'data-sanitized=')
+    .replace(/onmouseover\s*=/gi, 'data-sanitized=')
     .replace(/javascript:/gi, 'sanitized:');
+  
+  return sanitized;
 }
 
 /**
