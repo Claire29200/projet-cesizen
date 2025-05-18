@@ -1,6 +1,5 @@
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { securityService } from '@/services/securityService';
+import { securityService } from '@/services/security';
 
 describe('Security Service', () => {
   // Espions pour les méthodes globales
