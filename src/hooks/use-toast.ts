@@ -1,5 +1,5 @@
 import * as React from "react"
-import { toast as sonnerToast, type ToastT } from "sonner"
+import { toast as sonnerToast } from "sonner"
 
 export type ToastType = "foreground" | "background"
 
@@ -193,11 +193,15 @@ function toast(props: ToastProps) {
   dispatch({ type: actionTypes.ADD_TOAST, toast: newToast })
   
   // Utilisation en parallèle de sonner pour la compatibilité
-  return sonnerToast(sanitizedTitle as string, {
-    description: sanitizedDescription,
-    className: toastType.className,
-    duration: rest.duration || toastType.duration,
-  })
+  if (typeof sonnerToast === 'function') {
+    return sonnerToast(sanitizedTitle as string, {
+      description: sanitizedDescription,
+      className: toastType.className,
+      duration: rest.duration || toastType.duration,
+    });
+  }
+  
+  return id;
 }
 
 toast.success = (message: string, options = {}) => {

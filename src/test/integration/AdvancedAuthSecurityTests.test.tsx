@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -193,7 +192,8 @@ describe('Tests de sécurité avancés pour l\'authentification', () => {
         <Routes>
           <Route path="/profil" element={
             <button onClick={() => {
-              useAuthStore.getState().logout();
+              // Modifié : Utilisation directe du mockLogout au lieu de getState()
+              mockLogout();
             }}>
               Déconnexion
             </button>

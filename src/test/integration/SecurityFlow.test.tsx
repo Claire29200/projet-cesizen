@@ -45,7 +45,7 @@ vi.mock('@/components/ui/use-toast', () => ({
 
 describe('Security Flow Integration Test', () => {
   const mockLogout = vi.fn();
-  const mockNavigate = vi.fn();
+  const mockNavigate = vi.fn(); // Définir mockNavigate ici
   
   beforeEach(() => {
     vi.resetAllMocks();
