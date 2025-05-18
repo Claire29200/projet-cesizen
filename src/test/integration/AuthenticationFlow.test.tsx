@@ -1,8 +1,8 @@
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import Login from '@/pages/Login';
-import Profile from '@/pages/Profile';
 import { useAuthStore } from '@/store/auth';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -31,7 +31,7 @@ vi.mock('sonner', () => ({
 
 describe('Authentication Flow Integration Test', () => {
   const mockLogin = vi.fn();
-  const mockNavigate = vi.fn();
+  const mockNavigate = vi.fn(); // Définir mockNavigate au niveau de la description
   
   beforeEach(() => {
     vi.resetAllMocks();

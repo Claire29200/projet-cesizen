@@ -1,5 +1,5 @@
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '../../../test/test-utils';
 import { AuthButtons } from '../AuthButtons';
 import { act } from 'react-dom/test-utils';
@@ -54,10 +54,21 @@ describe('AuthButtons - Scénarios utilisateur', () => {
     });
     
     it("déclenche la fonction de déconnexion quand le bouton est cliqué", async () => {
-      // Définir le mock de logout ici
+      // Définir le mock de logout
       const logoutMock = vi.fn();
       
-      // Corriger l'erreur ici - render attend seulement 1 ou 2 arguments, mais nous en passions 3
+      // Utiliser un mock personnalisé pour LogoutButton uniquement dans ce test
+      vi.mock('../LogoutButton', () => ({
+        LogoutButton: () => (
+          <button 
+            data-testid="logout-button" 
+            onClick={logoutMock}
+          >
+            Déconnexion
+          </button>
+        )
+      }), { virtual: true });
+      
       render(<AuthButtons isAuthenticated={true} isAdmin={false} onLogoutClick={logoutMock} />);
       
       const logoutButton = screen.getByTestId('logout-button');

@@ -57,9 +57,11 @@ export function setupAuthSecurityMocks() {
   // Default mock implementations - moved into the function
   vi.resetAllMocks();
     
-  // Default mock implementations
-  (authController.validateSession as any).mockResolvedValue({ valid: true, session: { user: { id: 'test-user-id' } } });
-  (authController.isUserLocked as any).mockReturnValue(false);
+  // Default mock implementations for authController
+  (authController.validateSession as any) = vi.fn().mockResolvedValue({ valid: true, session: { user: { id: 'test-user-id' } } });
+  (authController.isUserLocked as any) = vi.fn().mockReturnValue(false);
+  
+  // Default mock implementation for useAuthStore
   (useAuthStore as any).mockReturnValue({
     isAuthenticated: false,
     login: vi.fn().mockResolvedValue(true),
@@ -68,12 +70,19 @@ export function setupAuthSecurityMocks() {
   });
 
   // Mock for React Router
+  const mockNavigate = vi.fn();
   vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
     return {
       ...actual,
-      useNavigate: () => vi.fn(),
-      useLocation: () => ({ pathname: '/', state: { from: { pathname: '/' } } })
+      useNavigate: () => mockNavigate,
+      useLocation: () => ({ pathname: '/', state: { from: { pathname: '/' } } }),
+      Navigate: ({ to }) => <div>Redirecting to {to}</div>
     };
   });
+  
+  // Return useful mocks that tests might need to access directly
+  return { 
+    mockNavigate
+  };
 }

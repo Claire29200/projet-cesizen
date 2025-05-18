@@ -52,7 +52,8 @@ export function mockReactRouter(mockNavigate) {
     const actual = await vi.importActual('react-router-dom');
     return {
       ...actual,
-      useNavigate: () => mockNavigate
+      useNavigate: () => mockNavigate,
+      Navigate: ({ to }) => <div>Redirecting to {to}</div>
     };
   });
 }

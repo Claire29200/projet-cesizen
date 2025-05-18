@@ -2,17 +2,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@/test/test-utils';
 import Login from '@/pages/Login';
-import { useAuthStore } from '@/store/auth';
 import { toast } from 'sonner';
 
 // Mock de authStore
 vi.mock('@/store/auth', () => ({
-  useAuthStore: {
-    getState: vi.fn().mockReturnValue({
-      login: vi.fn()
-    }),
-    subscribe: vi.fn(),
-  }
+  useAuthStore: vi.fn(() => ({
+    login: vi.fn()
+  }))
 }));
 
 // Mock de sonner toast
@@ -96,7 +92,7 @@ describe('Login Page - Scénario de connexion', () => {
   
   it('tente de connecter l\'utilisateur avec des identifiants valides', async () => {
     const loginMock = vi.fn().mockResolvedValue(true);
-    useAuthStore.getState = vi.fn().mockReturnValue({ login: loginMock });
+    (vi.mocked(useAuthStore)()).login = loginMock;
     
     render(<Login />);
     
@@ -123,7 +119,7 @@ describe('Login Page - Scénario de connexion', () => {
       throw new Error("Erreur de connexion");
     });
     
-    useAuthStore.getState = vi.fn().mockReturnValue({ login: loginMock });
+    (vi.mocked(useAuthStore)()).login = loginMock;
     
     render(<Login />);
     

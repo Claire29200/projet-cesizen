@@ -16,14 +16,12 @@ setupSecurityTestMocks();
 
 describe('User Session Security Tests', () => {
   const mockLogout = vi.fn();
+  const mockNavigate = vi.fn(); // Définir mockNavigate ici
   
   beforeEach(() => {
     vi.resetAllMocks();
     
-    // Définir mockNavigate avant de mocker react-router-dom
-    const mockNavigate = vi.fn();
-    
-    // Met à jour le mock de react-router-dom
+    // Met à jour le mock de react-router-dom avec mockNavigate défini
     vi.mock('react-router-dom', async () => {
       const actual = await vi.importActual('react-router-dom');
       return {

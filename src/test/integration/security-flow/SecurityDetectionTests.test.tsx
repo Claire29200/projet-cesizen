@@ -26,11 +26,10 @@ vi.mock('@/services/securityService', () => ({
 setupSecurityTestMocks();
 
 describe('Security Detection Tests', () => {
+  const mockNavigate = vi.fn(); // Définir mockNavigate au niveau de la description
+  
   beforeEach(() => {
     vi.resetAllMocks();
-    
-    // Définir mockNavigate
-    const mockNavigate = vi.fn();
     
     // Configuration par défaut pour les sécurités
     (securityService.detectFraming as any).mockReturnValue(false);

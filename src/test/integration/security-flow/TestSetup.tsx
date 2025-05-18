@@ -18,11 +18,23 @@ export const setupSecurityTestMocks = () => {
     }
   }));
 
+  // Mock pour useAuthStore
+  vi.mock('@/store/auth', () => ({
+    useAuthStore: vi.fn(() => ({
+      isAuthenticated: false,
+      isAdmin: false,
+      user: null,
+      logout: vi.fn().mockResolvedValue(true)
+    }))
+  }));
+
   // Ces fonctions seront remplacées dans les tests spécifiques
   vi.mock('react-router-dom', async () => {
     const actual = await vi.importActual('react-router-dom');
     return {
       ...actual,
+      useNavigate: () => vi.fn(),
+      Navigate: ({ to }) => <div>Redirecting to {to}</div>
     };
   });
 };
