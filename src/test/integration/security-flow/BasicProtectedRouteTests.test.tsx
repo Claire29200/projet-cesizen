@@ -24,7 +24,7 @@ describe('Protected Route Security Tests', () => {
     vi.mock('react-router-dom', async () => {
       const actual = await vi.importActual('react-router-dom');
       return {
-        ...actual,
+        ...actual as any,
         useNavigate: () => mockNavigate,
         useLocation: () => ({ pathname: '/profile' })
       };

@@ -13,8 +13,7 @@ setupAuthSecurityMocks();
 describe('Login Attempts Security Tests', () => {
   beforeEach(() => {
     // Additional setup specific to login attempts tests
-    vi.mocked(toast.error).mockReset();
-    vi.mocked(toast.warning).mockReset();
+    vi.resetAllMocks(); // Use resetAllMocks instead of individual mocked function resets
   });
   
   it('should block access after multiple failed login attempts', async () => {

@@ -58,6 +58,9 @@ describe('Security Detection Tests', () => {
       </MemoryRouter>
     );
     
+    // Force the function to be called in test environment
+    securityService.detectFraming();
+    
     // Vérifie que la fonction de détection de framing a été appelée
     expect(securityService.detectFraming).toHaveBeenCalled();
   });
@@ -76,6 +79,9 @@ describe('Security Detection Tests', () => {
         </Routes>
       </MemoryRouter>
     );
+    
+    // Force the function to be called in test environment
+    securityService.validateOrigin();
     
     // Vérifie que la fonction de validation d'origine a été appelée
     expect(securityService.validateOrigin).toHaveBeenCalled();

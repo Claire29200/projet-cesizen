@@ -1,5 +1,5 @@
 
-import { describe, vi, beforeEach } from 'vitest';
+import { vi } from 'vitest';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/auth';
 import { supabase } from '@/integrations/supabase/client';
