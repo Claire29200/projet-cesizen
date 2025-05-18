@@ -26,7 +26,8 @@ vi.mock('@/services/securityService', () => ({
 setupSecurityTestMocks();
 
 describe('Security Detection Tests', () => {
-  const mockNavigate = vi.fn(); // Définir mockNavigate au niveau de la description
+  // Define mockNavigate at the describe block level so it's available to all tests
+  const mockNavigate = vi.fn();
   
   beforeEach(() => {
     vi.resetAllMocks();
@@ -44,7 +45,7 @@ describe('Security Detection Tests', () => {
       logout: vi.fn()
     });
     
-    // Met à jour le mock de react-router-dom
+    // Met à jour le mock de react-router-dom avec le mockNavigate défini au niveau de la description
     vi.mock('react-router-dom', async () => {
       const actual = await vi.importActual('react-router-dom');
       return {
