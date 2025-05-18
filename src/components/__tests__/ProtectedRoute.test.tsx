@@ -1,8 +1,10 @@
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuthStore } from '@/store/auth';
 import { authController } from '@/controllers/authController';
+import { MemoryRouter } from 'react-router-dom';
 
 // Mock des dépendances
 vi.mock('@/store/auth', () => ({
@@ -31,7 +33,8 @@ vi.mock('react-router-dom', () => {
   return {
     ...actual,
     useNavigate: () => vi.fn(),
-    Navigate: ({ to }) => <div data-testid="navigate">Redirecting to {to}</div>
+    Navigate: ({ to }) => <div data-testid="navigate">Redirecting to {to}</div>,
+    MemoryRouter: ({ children }) => <div data-testid="memory-router">{children}</div>
   };
 });
 
