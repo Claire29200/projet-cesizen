@@ -102,12 +102,10 @@ export function sanitizeRequestParams(params: Record<string, any>): Record<strin
       
       if (typeof value === 'string') {
         // Sanitiser les chaînes de caractères
-        sanitized[key] = value
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#x27;')
-          .replace(/\//g, '&#x2F;');
+        sanitized[key] = sanitizeString(value);
+      } else if (typeof value === 'object' && value !== null) {
+        // Recursion pour les objets imbriqués
+        sanitized[key] = sanitizeRequestParams(value);
       } else {
         // Copier les valeurs non-chaînes telles quelles
         sanitized[key] = value;
@@ -116,6 +114,23 @@ export function sanitizeRequestParams(params: Record<string, any>): Record<strin
   }
   
   return sanitized;
+}
+
+/**
+ * Sanitise une chaîne pour échapper HTML et attributs
+ */
+function sanitizeString(value: string): string {
+  return value
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;')
+    .replace(/onerror/gi, 'data-sanitized')
+    .replace(/onclick/gi, 'data-sanitized')
+    .replace(/onload/gi, 'data-sanitized')
+    .replace(/onmouseover/gi, 'data-sanitized')
+    .replace(/javascript:/gi, 'sanitized:');
 }
 
 /**

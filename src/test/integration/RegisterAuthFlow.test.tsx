@@ -63,7 +63,7 @@ describe('Register Authentication Flow Integration Test', () => {
         ...actual,
         useNavigate: () => mockNavigate
       };
-    });
+    }, { virtual: true });
     
     // Mock pour Supabase auth
     (supabase.auth.signUp as any).mockResolvedValue({

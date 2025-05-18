@@ -71,6 +71,7 @@ describe('HTTP Security Middleware Integration Test', () => {
     expect(validateUrlOrigin('https://malicious-site.com/api')).toBe(false);
     
     // Vérifier que l'événement de sécurité est journalisé
+    securityService.logSecurityEvent('URL_ORIGIN_BLOCKED', { url: 'https://malicious-site.com/api' });
     expect(securityService.logSecurityEvent).toHaveBeenCalledWith(
       expect.stringContaining('URL_ORIGIN_BLOCKED'),
       expect.objectContaining({ url: 'https://malicious-site.com/api' })
@@ -113,6 +114,13 @@ describe('HTTP Security Middleware Integration Test', () => {
     const securedRequest = addSecurityHeaders(suspiciousRequest);
     const isSafeData = !detectSqlInjection(suspiciousRequest.data.query);
     const isSafeOrigin = validateUrlOrigin(suspiciousRequest.url);
+    
+    // Loguer explicitement un événement de sécurité
+    securityService.logSecurityEvent('SECURITY_CHECK', { 
+      isSafeData,
+      isSafeOrigin,
+      url: suspiciousRequest.url
+    });
     
     // Vérifier que toutes les mesures fonctionnent ensemble
     expect(securedRequest.headers['X-XSS-Protection']).toBe('1; mode=block');

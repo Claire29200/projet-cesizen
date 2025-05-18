@@ -45,7 +45,7 @@ vi.mock('@/components/ui/use-toast', () => ({
 
 describe('Security Flow Integration Test', () => {
   const mockLogout = vi.fn();
-  const mockNavigate = vi.fn(); // Définir mockNavigate ici
+  const mockNavigate = vi.fn();
   
   beforeEach(() => {
     vi.resetAllMocks();
@@ -58,7 +58,7 @@ describe('Security Flow Integration Test', () => {
         useNavigate: () => mockNavigate,
         useLocation: () => ({ pathname: '/profile' })
       };
-    });
+    }, { virtual: true });
     
     // Configuration par défaut pour les sécurités
     (securityService.detectFraming as any).mockReturnValue(false);
