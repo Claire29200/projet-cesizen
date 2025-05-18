@@ -1,6 +1,6 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { waitFor } from '@testing-library/react';
+import { waitFor, screen } from '@testing-library/react'; // Import screen here
 import { useAuthStore } from '@/store/auth';
 import { setupAuthMocks, mockReactRouter } from '../../mocks/authMocks';
 import { renderRegisterComponent, fillRegisterForm, submitRegisterForm } from '../../helpers/registerTestHelpers';

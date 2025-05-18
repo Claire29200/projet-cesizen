@@ -16,7 +16,8 @@ vi.mock('@/services/securityService', () => ({
     detectFraming: vi.fn(),
     validateOrigin: vi.fn(),
     logSecurityEvent: vi.fn(),
-    checkInactivity: vi.fn()
+    checkInactivity: vi.fn(),
+    checkSecureContext: vi.fn()
   }
 }));
 
