@@ -62,6 +62,3 @@ Pour tester l'application rapidement, vous pouvez utiliser les comptes de démon
 - Vitest (tests)
 - Framer Motion (animations)
 
-## Licence
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
