@@ -34,7 +34,7 @@ const Index = () => {
             className="text-center mb-12"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-mental-800 mb-4">
-              Bienvenue sur CESIZen
+              Bienvenue sur CESIZen - c'est trop bien 
             </h1>
             <p className="text-xl text-mental-600 max-w-3xl mx-auto">
               Votre espace pour évaluer et améliorer votre bien-être mental au quotidien.
